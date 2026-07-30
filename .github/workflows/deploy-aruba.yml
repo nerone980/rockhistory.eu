@@ -53,6 +53,18 @@ jobs:
           # di lftp: lftp non le rimuove e le invia letteralmente al server (verificato
           # con un finto server FTP: "USER \"utente\"" invece di "USER utente"), causando
           # sia il fallimento DNS sull'host sia il rifiuto di login su utente/password.
+          # Debug temporaneo: il login funziona ma l'upload alla radice dà
+          # "550 Permission denied" su ogni file. Elenchiamo cosa c'è già
+          # nella home FTP per capire dove si può scrivere davvero.
+          lftp -e "
+            set net:timeout 15;
+            set net:max-retries 2;
+            set ssl:verify-certificate no;
+            open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER;
+            pwd;
+            ls -la;
+            bye
+          "
           lftp -e "
             set net:timeout 15;
             set net:max-retries 2;
