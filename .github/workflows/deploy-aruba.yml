@@ -49,14 +49,15 @@ jobs:
           FTP_SERVER=${FTP_SERVER#ftp://}
           FTP_SERVER=${FTP_SERVER#ftps://}
           FTP_SERVER=${FTP_SERVER%/}
-          # Importante: l'hostname NON va racchiuso tra virgolette nel comando "open" di
-          # lftp, perché lftp non le rimuove dall'argomento e prova a risolvere il DNS
-          # includendo le virgolette letterali, fallendo con "Name or service not known".
+          # Importante: nessun argomento va racchiuso tra virgolette nel comando "open"
+          # di lftp: lftp non le rimuove e le invia letteralmente al server (verificato
+          # con un finto server FTP: "USER \"utente\"" invece di "USER utente"), causando
+          # sia il fallimento DNS sull'host sia il rifiuto di login su utente/password.
           lftp -e "
             set net:timeout 15;
             set net:max-retries 2;
             set ssl:verify-certificate no;
-            open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" $FTP_SERVER;
+            open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER;
             mirror --reverse --verbose --parallel=2 ./dist/ ./;
             bye
           "
