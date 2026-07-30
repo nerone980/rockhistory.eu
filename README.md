@@ -24,7 +24,12 @@ npm run build
 
 ## Struttura dati
 
-I contenuti (band, discografia, tracklist) vivono in `src/data/bands.ts`, tipizzati in `src/types.ts`. Per aggiungere una band o un disco è sufficiente estendere l'array `bands`.
+I contenuti (band, discografia, tracklist) sono tipizzati in `src/types.ts` e vivono in due file, uniti nell'array `bands` esportato da `src/data/bands.ts`:
+
+- `src/data/bands.ts` → `coreBands`: le prime 10 band storiche
+- `src/data/bands-more.ts` → `moreBands`: le restanti ~90, fino a un totale di 100 band dal 1960 a oggi
+
+Per aggiungere una band o un disco è sufficiente estendere uno dei due array (indifferentemente quale, sono concatenati).
 
 ## Deploy automatico su Aruba
 

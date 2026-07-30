@@ -1,6 +1,7 @@
 import type { Band } from '../types'
+import { moreBands } from './bands-more'
 
-export const bands: Band[] = [
+export const coreBands: Band[] = [
   {
     slug: 'the-beatles',
     name: 'The Beatles',
@@ -444,6 +445,8 @@ export const bands: Band[] = [
     ],
   },
 ]
+
+export const bands: Band[] = [...coreBands, ...moreBands]
 
 export function getBandBySlug(slug: string): Band | undefined {
   return bands.find((b) => b.slug === slug)
