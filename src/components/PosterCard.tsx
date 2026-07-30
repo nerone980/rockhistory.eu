@@ -9,7 +9,13 @@ export default function PosterCard({ band }: { band: Band }) {
 
   return (
     <Link to={`/band/${band.slug}`} className="group block">
-      <Poster title={band.name} subtitle={span} palette={band.palette} badge={decadeOf(band.formedYear)} />
+      <Poster
+        title={band.name}
+        subtitle={span}
+        palette={band.palette}
+        badge={decadeOf(band.formedYear)}
+        imageUrl={band.photoImage}
+      />
       <p className="mt-2 truncate text-sm text-white/60">{band.genres.join(' · ')}</p>
     </Link>
   )

@@ -28,7 +28,7 @@ I contenuti (band, discografia, tracklist) vivono in `src/data/bands.ts`, tipizz
 
 ## Deploy automatico su Aruba
 
-Il workflow `.github/workflows/deploy-aruba.yml` builda il sito e carica il contenuto di `dist/` sull'hosting Aruba via FTP a ogni push su `main` (o manualmente da GitHub Actions).
+Il workflow `.github/workflows/deploy-aruba.yml` builda il sito (`npm ci && npm run build`) e carica il contenuto di `dist/` sull'hosting Aruba via FTP (action `SamKirkland/FTP-Deploy-Action`) a ogni push su `main`.
 
 Prima di usarlo, configura questi secret nel repository (**Settings → Secrets and variables → Actions**):
 
@@ -36,6 +36,15 @@ Prima di usarlo, configura questi secret nel repository (**Settings → Secrets 
 - `FTP_USERNAME`: utenza FTP
 - `FTP_PASSWORD`: password dell'utenza FTP
 
-I file vengono caricati nella root dello spazio FTP tramite `lftp mirror --reverse` (preferito alla action `FTP-Deploy-Action`, che su alcuni server fallisce nel creare nuove sottocartelle). Il comando non usa `--delete`, quindi non cancella file già presenti sul server che non fanno parte della build; se in futuro serve una sincronizzazione a specchio completa, va valutato con attenzione perché è un'operazione distruttiva.
+I file vengono caricati in `server-dir: /www.rockhistory.eu/` — la cartella che Aruba associa a questo dominio in un piano hosting multi-dominio (non la root FTP). Se cambi dominio o piano hosting, verifica il percorso corretto nel pannello Aruba prima di modificarlo.
 
-Nota: il protocollo usato è FTP semplice, non cifrato — scelta esplicita per compatibilità con l'hosting Aruba. Le credenziali restano al sicuro nei secret di GitHub Actions e non compaiono nei log, ma il traffico FTP verso il server non è cifrato.
+Il file `public/.htaccess` (copiato automaticamente in `dist/` a ogni build) abilita il routing client-side della SPA su Apache: senza queste regole, aprire direttamente una sotto-rotta (es. `/band/the-beatles`) o la root del sito darebbe 404.
+
+## Immagini reali (foto band, copertine dischi)
+
+Per usare foto/copertine reali al posto della locandina generata via CSS:
+
+1. Aggiungi il file immagine in `public/images/bands/<slug-band>.jpg` (foto band) o `public/images/albums/<slug-band>/<slug-album>.jpg` (copertina disco)
+2. In `src/data/bands.ts`, imposta `photoImage: '/images/bands/<slug-band>.jpg'` sulla band, oppure `coverImage: '/images/albums/<slug-band>/<slug-album>.jpg'` sull'album
+
+Se il campo non è impostato, si usa automaticamente la locandina stilizzata. Attenzione: foto di band e copertine sono materiale protetto da copyright — verifica di avere i diritti/una licenza prima di pubblicarle su un sito pubblico.

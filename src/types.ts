@@ -12,6 +12,8 @@ export interface Album {
   history: string
   tracks: Track[]
   palette: [string, string]
+  /** Copertina reale (es. /images/albums/band-slug/album-slug.jpg). Se assente, si usa la locandina generata. */
+  coverImage?: string
 }
 
 export interface Band {
@@ -25,6 +27,8 @@ export interface Band {
   history: string
   palette: [string, string]
   albums: Album[]
+  /** Foto reale della band (es. /images/bands/band-slug.jpg). Se assente, si usa la locandina generata. */
+  photoImage?: string
 }
 
 export function decadeOf(year: number): string {

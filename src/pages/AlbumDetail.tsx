@@ -17,7 +17,12 @@ export default function AlbumDetail() {
 
       <div className="grid gap-8 sm:grid-cols-[280px_1fr]">
         <div className="mx-auto w-full max-w-xs sm:mx-0">
-          <Poster title={album.title} subtitle={String(album.year)} palette={album.palette} />
+          <Poster
+            title={album.title}
+            subtitle={String(album.year)}
+            palette={album.palette}
+            imageUrl={album.coverImage}
+          />
         </div>
 
         <div>
