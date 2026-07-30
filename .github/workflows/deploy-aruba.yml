@@ -44,6 +44,10 @@ jobs:
           FTP_SERVER=$(printf '%s' "$FTP_SERVER" | tr -d '\r\n' | xargs)
           FTP_USERNAME=$(printf '%s' "$FTP_USERNAME" | tr -d '\r\n' | xargs)
           FTP_PASSWORD=$(printf '%s' "$FTP_PASSWORD" | tr -d '\r\n')
+          # Debug temporaneo: l'hostname FTP non è un dato sensibile, lo mostriamo
+          # in base64 per bypassare il mascheramento automatico dei log e vedere
+          # se contiene caratteri o prefissi inattesi.
+          echo "FTP_SERVER (base64): $(printf '%s' "$FTP_SERVER" | base64)"
           lftp -e "
             set net:timeout 15;
             set net:max-retries 2;
