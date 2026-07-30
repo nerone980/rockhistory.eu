@@ -25,5 +25,11 @@ jobs:
           PASSWORD=$(echo "$FTP_PASSWORD" | xargs)
           echo "== Root =="
           lftp -u "$USERNAME","$PASSWORD" "$SERVER" -e "set ssl:verify-certificate no; ls -la; bye"
-          echo "== Struttura fino a 3 livelli =="
-          lftp -u "$USERNAME","$PASSWORD" "$SERVER" -e "set ssl:verify-certificate no; find -maxdepth 3; bye" || true
+          echo "== Contenuto www.rockhistory.eu =="
+          lftp -u "$USERNAME","$PASSWORD" "$SERVER" -e "set ssl:verify-certificate no; cd www.rockhistory.eu; ls -la; bye"
+          echo "== Contenuto www.rockhistory.eu/assets (se esiste) =="
+          lftp -u "$USERNAME","$PASSWORD" "$SERVER" -e "set ssl:verify-certificate no; cd www.rockhistory.eu/assets; ls -la; bye" || true
+          echo "== .htaccess =="
+          lftp -u "$USERNAME","$PASSWORD" "$SERVER" -e "set ssl:verify-certificate no; cat www.rockhistory.eu/.htaccess; bye" || true
+          echo "== index.html =="
+          lftp -u "$USERNAME","$PASSWORD" "$SERVER" -e "set ssl:verify-certificate no; cat www.rockhistory.eu/index.html; bye" || true
