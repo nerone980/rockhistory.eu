@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import Navbar from './components/Navbar'
+import MusicalBackground from './components/MusicalBackground'
 import Home from './pages/Home'
 import BandDetail from './pages/BandDetail'
 import AlbumDetail from './pages/AlbumDetail'
@@ -7,7 +8,8 @@ import NotFound from './pages/NotFound'
 
 function App() {
   return (
-    <div className="min-h-screen bg-neutral-950">
+    <div className="min-h-screen">
+      <MusicalBackground />
       <Navbar />
       <main>
         <Routes>

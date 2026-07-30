@@ -18,7 +18,7 @@ export default function BandDetail() {
 
       <div className="grid gap-8 sm:grid-cols-[280px_1fr]">
         <div className="mx-auto w-full max-w-xs sm:mx-0">
-          <Poster title={band.name} subtitle={span} palette={band.palette} />
+          <Poster title={band.name} subtitle={span} palette={band.palette} imageUrl={band.photoImage} />
         </div>
 
         <div>
@@ -44,7 +44,12 @@ export default function BandDetail() {
       <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4">
         {band.albums.map((album) => (
           <Link key={album.slug} to={`/band/${band.slug}/album/${album.slug}`} className="group block">
-            <Poster title={album.title} subtitle={String(album.year)} palette={album.palette} />
+            <Poster
+              title={album.title}
+              subtitle={String(album.year)}
+              palette={album.palette}
+              imageUrl={album.coverImage}
+            />
             <p className="mt-2 truncate text-sm text-white/60">{album.tagline}</p>
           </Link>
         ))}
