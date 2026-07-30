@@ -49,11 +49,11 @@ jobs:
           FTP_SERVER=${FTP_SERVER#ftp://}
           FTP_SERVER=${FTP_SERVER#ftps://}
           FTP_SERVER=${FTP_SERVER%/}
-          # Debug temporaneo: il base64 viene mascherato automaticamente da GitHub,
-          # quindi stampiamo solo lunghezza e "forma" (lettere/cifre sostituite,
-          # punteggiatura mantenuta) per capire la struttura senza esporre il valore.
-          FTP_SERVER_SHAPE=$(printf '%s' "$FTP_SERVER" | sed -E 's/[a-z]/a/g; s/[A-Z]/A/g; s/[0-9]/0/g')
-          echo "FTP_SERVER length=${#FTP_SERVER} shape=$FTP_SERVER_SHAPE"
+          # Il forwarder DNS predefinito del runner (Azure) può avere una risposta
+          # negativa in cache per un hostname appena attivato lato Aruba, mentre
+          # un resolver pubblico lo risolve correttamente da subito. Forziamolo.
+          echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf > /dev/null
+          getent hosts "$FTP_SERVER" || echo "Risoluzione DNS ancora fallita con resolver pubblico"
           lftp -e "
             set net:timeout 15;
             set net:max-retries 2;
