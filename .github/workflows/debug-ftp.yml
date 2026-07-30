@@ -1,0 +1,29 @@
+name: Debug struttura FTP Aruba
+
+# Workflow diagnostico manuale: elenca la struttura delle cartelle sull'hosting
+# per capire perché il dominio mostra la pagina di cortesia Aruba invece del sito.
+on:
+  workflow_dispatch:
+
+jobs:
+  debug:
+    name: Elenco cartelle FTP
+    runs-on: ubuntu-latest
+    steps:
+      - name: Installa lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
+      - name: Elenco struttura remota
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          set -e
+          SERVER=$(echo "$FTP_SERVER" | xargs)
+          USERNAME=$(echo "$FTP_USERNAME" | xargs)
+          PASSWORD=$(echo "$FTP_PASSWORD" | xargs)
+          echo "== Root =="
+          lftp -u "$USERNAME","$PASSWORD" "$SERVER" -e "set ssl:verify-certificate no; ls -la; bye"
+          echo "== Struttura fino a 3 livelli =="
+          lftp -u "$USERNAME","$PASSWORD" "$SERVER" -e "set ssl:verify-certificate no; find -maxdepth 3; bye" || true
