@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import PosterCard from '../components/PosterCard'
 import { bands } from '../data/bands'
 import { decadeOf } from '../types'
+import { GENRE_GROUPS, bandMatchesGenreGroup } from '../data/genreGroups'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 
 export default function Home() {
@@ -15,11 +16,17 @@ export default function Home() {
     return ['Tutte', ...Array.from(set).sort()]
   }, [])
 
+  const genreOptions = useMemo(() => ['Tutte', ...GENRE_GROUPS.map((g) => g.name)], [])
+
   const [decade, setDecade] = useState('Tutte')
+  const [genre, setGenre] = useState('Tutte')
 
   const filtered = useMemo(
-    () => (decade === 'Tutte' ? bands : bands.filter((b) => decadeOf(b.formedYear) === decade)),
-    [decade],
+    () =>
+      bands
+        .filter((b) => decade === 'Tutte' || decadeOf(b.formedYear) === decade)
+        .filter((b) => genre === 'Tutte' || bandMatchesGenreGroup(b, genre)),
+    [decade, genre],
   )
 
   return (
@@ -38,7 +45,7 @@ export default function Home() {
         </p>
       </section>
 
-      <div className="mb-10 flex flex-wrap justify-center gap-2">
+      <div className="mb-4 flex flex-wrap justify-center gap-2">
         {decades.map((d) => (
           <button
             key={d}
@@ -53,6 +60,28 @@ export default function Home() {
           </button>
         ))}
       </div>
+
+      <div className="mb-10 flex flex-wrap justify-center gap-2">
+        {genreOptions.map((g) => (
+          <button
+            key={g}
+            onClick={() => setGenre(g)}
+            className={`rounded-full border px-3.5 py-1 font-heading text-xs font-medium uppercase tracking-wide transition-all duration-200 ${
+              genre === g
+                ? 'border-red-400/80 bg-red-500/20 text-red-300'
+                : 'border-white/10 text-white/40 hover:border-white/25 hover:text-white/70'
+            }`}
+          >
+            {g}
+          </button>
+        ))}
+      </div>
+
+      {filtered.length === 0 && (
+        <p className="mb-10 text-center text-sm text-white/40">
+          Nessuna band trovata per questa combinazione di filtri.
+        </p>
+      )}
 
       <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {filtered.map((band) => (
