@@ -49,16 +49,14 @@ jobs:
           FTP_SERVER=${FTP_SERVER#ftp://}
           FTP_SERVER=${FTP_SERVER#ftps://}
           FTP_SERVER=${FTP_SERVER%/}
-          # Il forwarder DNS predefinito del runner (Azure) può avere una risposta
-          # negativa in cache per un hostname appena attivato lato Aruba, mentre
-          # un resolver pubblico lo risolve correttamente da subito. Forziamolo.
-          echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf > /dev/null
-          getent hosts "$FTP_SERVER" || echo "Risoluzione DNS ancora fallita con resolver pubblico"
+          # Importante: l'hostname NON va racchiuso tra virgolette nel comando "open" di
+          # lftp, perché lftp non le rimuove dall'argomento e prova a risolvere il DNS
+          # includendo le virgolette letterali, fallendo con "Name or service not known".
           lftp -e "
             set net:timeout 15;
             set net:max-retries 2;
             set ssl:verify-certificate no;
-            open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" \"$FTP_SERVER\";
+            open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" $FTP_SERVER;
             mirror --reverse --verbose --parallel=2 ./dist/ ./;
             bye
           "
