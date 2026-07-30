@@ -17,26 +17,30 @@ export default function Home() {
   )
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <section className="mb-10 text-center">
-        <h1 className="font-display text-3xl font-extrabold text-white sm:text-5xl">
-          La storia del rock, band per band
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+      <section className="mb-12 text-center">
+        <p className="mb-3 font-heading text-xs font-semibold uppercase tracking-[0.3em] text-red-500">
+          {bands.length} band · 1960 → oggi
+        </p>
+        <h1 className="font-display text-4xl leading-[0.95] tracking-tight text-white sm:text-6xl md:text-7xl">
+          La storia del <span className="text-red-500">rock</span>,
+          <br className="hidden sm:block" /> band per band
         </h1>
-        <p className="mx-auto mt-3 max-w-2xl text-white/60">
+        <p className="mx-auto mt-5 max-w-2xl text-base text-white/60 sm:text-lg">
           Dalle locandine degli anni Sessanta alle band di oggi: scopri la storia dei gruppi, i
           loro dischi e le hit che hanno segnato ogni epoca.
         </p>
       </section>
 
-      <div className="mb-8 flex flex-wrap justify-center gap-2">
+      <div className="mb-10 flex flex-wrap justify-center gap-2">
         {decades.map((d) => (
           <button
             key={d}
             onClick={() => setDecade(d)}
-            className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+            className={`rounded-full border px-4 py-1.5 font-heading text-sm font-medium uppercase tracking-wide transition-all duration-200 ${
               decade === d
-                ? 'border-red-500 bg-red-500 text-white'
-                : 'border-white/20 text-white/70 hover:border-white/40 hover:text-white'
+                ? 'border-red-500 bg-red-500 text-white shadow-[0_0_20px_-4px_rgba(192,57,43,0.8)]'
+                : 'border-white/15 text-white/60 hover:border-white/30 hover:text-white'
             }`}
           >
             {d}

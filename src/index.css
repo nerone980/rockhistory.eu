@@ -1,10 +1,33 @@
 @import 'tailwindcss';
 
 @theme {
-  --font-display: 'Georgia', 'Times New Roman', serif;
+  --font-display: 'Anton', 'Oswald', 'Impact', sans-serif;
+  --font-heading: 'Oswald', 'Segoe UI', sans-serif;
 }
 
 body {
   margin: 0;
   background-color: #0a0a0a;
+}
+
+::selection {
+  background-color: #c0392b;
+  color: #fff;
+}
+
+/* Sottile texture "grana" da poster stampato, applicata sopra lo sfondo */
+.grain-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #3a1414;
+  border-radius: 999px;
 }

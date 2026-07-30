@@ -8,7 +8,7 @@ import NotFound from './pages/NotFound'
 
 function App() {
   return (
-    <div className="min-h-screen">
+    <div className="grain-overlay min-h-screen">
       <MusicalBackground />
       <Navbar />
       <main>
