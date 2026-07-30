@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Non toccare i file/cartelle realmente esistenti (asset, immagini, ecc.)
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Tutte le altre richieste vengono servite da index.html
+  # per lasciare il routing alla SPA (React Router)
+  RewriteRule ^ index.html [L]
+</IfModule>
