@@ -44,10 +44,16 @@ jobs:
           FTP_SERVER=$(printf '%s' "$FTP_SERVER" | tr -d '\r\n' | xargs)
           FTP_USERNAME=$(printf '%s' "$FTP_USERNAME" | tr -d '\r\n' | xargs)
           FTP_PASSWORD=$(printf '%s' "$FTP_PASSWORD" | tr -d '\r\n')
-          # Debug temporaneo: l'hostname FTP non è un dato sensibile, lo mostriamo
-          # in base64 per bypassare il mascheramento automatico dei log e vedere
-          # se contiene caratteri o prefissi inattesi.
-          echo "FTP_SERVER (base64): $(printf '%s' "$FTP_SERVER" | base64)"
+          # Rimuove un eventuale prefisso di schema (ftp://, ftps://) e slash finale,
+          # nel caso il valore sia stato copiato come URL invece che come hostname puro.
+          FTP_SERVER=${FTP_SERVER#ftp://}
+          FTP_SERVER=${FTP_SERVER#ftps://}
+          FTP_SERVER=${FTP_SERVER%/}
+          # Debug temporaneo: il base64 viene mascherato automaticamente da GitHub,
+          # quindi stampiamo solo lunghezza e "forma" (lettere/cifre sostituite,
+          # punteggiatura mantenuta) per capire la struttura senza esporre il valore.
+          FTP_SERVER_SHAPE=$(printf '%s' "$FTP_SERVER" | sed -E 's/[a-z]/a/g; s/[A-Z]/A/g; s/[0-9]/0/g')
+          echo "FTP_SERVER length=${#FTP_SERVER} shape=$FTP_SERVER_SHAPE"
           lftp -e "
             set net:timeout 15;
             set net:max-retries 2;
