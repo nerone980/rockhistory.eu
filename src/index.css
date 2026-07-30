@@ -1,5 +1,22 @@
 @import 'tailwindcss';
 
+/* Font ospitati localmente (nessuna richiesta esterna a Google Fonts): niente dati condivisi con terze parti. */
+@font-face {
+  font-family: 'Anton';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/anton-latin-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 200 700;
+  font-display: swap;
+  src: url('/fonts/oswald-latin-var.woff2') format('woff2-variations');
+}
+
 @theme {
   --font-display: 'Anton', 'Oswald', 'Impact', sans-serif;
   --font-heading: 'Oswald', 'Segoe UI', sans-serif;

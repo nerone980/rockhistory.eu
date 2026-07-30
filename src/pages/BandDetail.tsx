@@ -1,6 +1,7 @@
 import { Link, Navigate, useParams } from 'react-router-dom'
 import Poster from '../components/Poster'
 import { getBandBySlug } from '../data/bands'
+import { useDocumentMeta } from '../hooks/useDocumentMeta'
 
 function SectionLabel({ children }: { children: string }) {
   return (
@@ -14,6 +15,13 @@ function SectionLabel({ children }: { children: string }) {
 export default function BandDetail() {
   const { bandSlug = '' } = useParams()
   const band = getBandBySlug(bandSlug)
+
+  useDocumentMeta(
+    band ? `${band.name} — Storia, discografia e dischi | RockHistory` : 'RockHistory',
+    band
+      ? `${band.name}: storia della band, formazione e discografia completa (${band.albums.length} album) su RockHistory.`
+      : '',
+  )
 
   if (!band) return <Navigate to="/" replace />
 
