@@ -2,6 +2,15 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import Poster from '../components/Poster'
 import { getBandBySlug } from '../data/bands'
 
+function SectionLabel({ children }: { children: string }) {
+  return (
+    <h2 className="flex items-center gap-2 font-heading text-xs font-semibold uppercase tracking-[0.2em] text-white/40">
+      <span className="h-px w-4 bg-red-500/70" />
+      {children}
+    </h2>
+  )
+}
+
 export default function BandDetail() {
   const { bandSlug = '' } = useParams()
   const band = getBandBySlug(bandSlug)
@@ -12,7 +21,10 @@ export default function BandDetail() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <Link to="/" className="mb-6 inline-block text-sm text-white/50 hover:text-white">
+      <Link
+        to="/"
+        className="mb-6 inline-flex items-center gap-1 text-sm text-white/50 transition-colors hover:text-red-400"
+      >
         ← Tutte le band
       </Link>
 
@@ -22,25 +34,32 @@ export default function BandDetail() {
         </div>
 
         <div>
-          <h1 className="font-display text-3xl font-extrabold text-white sm:text-4xl">{band.name}</h1>
-          <p className="mt-1 text-white/60">
+          <h1 className="font-display text-4xl leading-none tracking-tight text-white sm:text-5xl">
+            {band.name}
+          </h1>
+          <p className="mt-2 text-white/60">
             {band.origin} · {span}
           </p>
-          <p className="mt-1 text-sm text-white/50">{band.genres.join(' · ')}</p>
+          <p className="mt-1 font-heading text-sm uppercase tracking-wide text-white/40">
+            {band.genres.join(' · ')}
+          </p>
 
-          <h2 className="mt-6 text-sm font-semibold uppercase tracking-wide text-white/40">
-            Formazione
-          </h2>
-          <p className="mt-1 text-white/80">{band.members.join(', ')}</p>
+          <div className="mt-6 space-y-1.5">
+            <SectionLabel>Formazione</SectionLabel>
+            <p className="text-white/80">{band.members.join(', ')}</p>
+          </div>
 
-          <h2 className="mt-6 text-sm font-semibold uppercase tracking-wide text-white/40">
-            Storia della band
-          </h2>
-          <p className="mt-2 leading-relaxed text-white/80">{band.history}</p>
+          <div className="mt-6 space-y-1.5">
+            <SectionLabel>Storia della band</SectionLabel>
+            <p className="leading-relaxed text-white/80">{band.history}</p>
+          </div>
         </div>
       </div>
 
-      <h2 className="mb-5 mt-12 font-display text-2xl font-bold text-white">Discografia</h2>
+      <div className="mb-6 mt-14 flex items-baseline gap-3">
+        <h2 className="font-display text-3xl tracking-tight text-white">Discografia</h2>
+        <span className="font-heading text-sm text-white/40">{band.albums.length} album</span>
+      </div>
       <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4">
         {band.albums.map((album) => (
           <Link key={album.slug} to={`/band/${band.slug}/album/${album.slug}`} className="group block">

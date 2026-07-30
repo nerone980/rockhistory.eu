@@ -16,7 +16,9 @@ export default function PosterCard({ band }: { band: Band }) {
         badge={decadeOf(band.formedYear)}
         imageUrl={band.photoImage}
       />
-      <p className="mt-2 truncate text-sm text-white/60">{band.genres.join(' · ')}</p>
+      <p className="mt-2 truncate font-heading text-sm text-white/50 transition-colors group-hover:text-white/70">
+        {band.genres.join(' · ')}
+      </p>
     </Link>
   )
 }
