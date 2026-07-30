@@ -1,48 +1,27 @@
-name: Deploy su Aruba (FTP)
+name: Deploy to Aruba FTP
 
+# Il trigger: la pipeline parte in automatico ad ogni push sul branch 'main'
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
-
-concurrency:
-  group: deploy-aruba
-  cancel-in-progress: true
+    branches:
+      - main
 
 jobs:
   deploy:
+    name: Sincronizzazione FTP
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      # Task 1: Effettua il checkout del codice sul runner
+      - name: Checkout del codice
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      # Task 2: Carica i file su Aruba
+      - name: Sincronizzazione FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          node-version: 20
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Deploy su Aruba via FTP (lftp mirror)
-        env:
-          FTP_SERVER: ${{ secrets.FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y lftp
-          FTP_SERVER=$(printf '%s' "$FTP_SERVER" | tr -d '\r\n' | xargs)
-          FTP_USERNAME=$(printf '%s' "$FTP_USERNAME" | tr -d '\r\n' | xargs)
-          FTP_PASSWORD=$(printf '%s' "$FTP_PASSWORD" | tr -d '\r\n')
-          lftp -e "
-            set net:timeout 15;
-            set net:max-retries 2;
-            open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" \"$FTP_SERVER\";
-            mirror --reverse --verbose --parallel=2 ./dist/ ./;
-            bye
-          "
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # Importante: definisci la cartella pubblica di Aruba
+          server-dir: /www.rockhistory.eu/
