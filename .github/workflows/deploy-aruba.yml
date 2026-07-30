@@ -36,6 +36,9 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install -y lftp
+          FTP_SERVER=$(printf '%s' "$FTP_SERVER" | tr -d '\r\n' | xargs)
+          FTP_USERNAME=$(printf '%s' "$FTP_USERNAME" | tr -d '\r\n' | xargs)
+          FTP_PASSWORD=$(printf '%s' "$FTP_PASSWORD" | tr -d '\r\n')
           lftp -e "
             set net:timeout 15;
             set net:max-retries 2;
