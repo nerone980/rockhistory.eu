@@ -53,3 +53,15 @@ Per usare foto/copertine reali al posto della locandina generata via CSS:
 2. In `src/data/bands.ts`, imposta `photoImage: '/images/bands/<slug-band>.jpg'` sulla band, oppure `coverImage: '/images/albums/<slug-band>/<slug-album>.jpg'` sull'album
 
 Se il campo non è impostato, si usa automaticamente la locandina stilizzata. Attenzione: foto di band e copertine sono materiale protetto da copyright — verifica di avere i diritti/una licenza prima di pubblicarle su un sito pubblico.
+
+## Privacy e cookie
+
+Il sito non usa cookie di profilazione, analytics o servizi di terze parti. Anche i font (Anton, Oswald) sono ospitati localmente in `public/fonts/` invece che caricati da Google Fonts, per non condividere l'IP dei visitatori con terze parti. Non essendoci cookie non tecnici, non è presente (né necessario) un banner di consenso: solo un avviso informativo in footer che rimanda a `/privacy`.
+
+Per rigenerare i file font locali (es. per cambiare font o pesi): scaricare i `.woff2` dal subset "latin" della relativa famiglia da Google Fonts e sostituire i file in `public/fonts/`, aggiornando i riferimenti `@font-face` in `src/index.css`.
+
+## SEO
+
+- Title e meta description sono impostati dinamicamente per ogni pagina (home, band, disco) tramite l'hook `src/hooks/useDocumentMeta.ts`.
+- `public/sitemap.xml` viene rigenerata automaticamente ad ogni build (script `npm run generate-sitemap`, eseguito come `prebuild`) leggendo tutte le band e gli album da `src/data/bands.ts`.
+- `public/robots.txt` consente l'indicizzazione e punta alla sitemap.

@@ -2,6 +2,7 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import Poster from '../components/Poster'
 import { getAlbum } from '../data/bands'
 import { formatDuration } from '../types'
+import { useDocumentMeta } from '../hooks/useDocumentMeta'
 
 function SectionLabel({ children }: { children: string }) {
   return (
@@ -15,6 +16,13 @@ function SectionLabel({ children }: { children: string }) {
 export default function AlbumDetail() {
   const { bandSlug = '', albumSlug = '' } = useParams()
   const { band, album } = getAlbum(bandSlug, albumSlug)
+
+  useDocumentMeta(
+    band && album ? `${album.title} (${album.year}) — ${band.name} | RockHistory` : 'RockHistory',
+    band && album
+      ? `${album.title}, disco di ${band.name} del ${album.year}: storia, tracklist e hit su RockHistory.`
+      : '',
+  )
 
   if (!band || !album) return <Navigate to="/" replace />
 

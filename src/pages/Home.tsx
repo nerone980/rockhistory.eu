@@ -2,8 +2,14 @@ import { useMemo, useState } from 'react'
 import PosterCard from '../components/PosterCard'
 import { bands } from '../data/bands'
 import { decadeOf } from '../types'
+import { useDocumentMeta } from '../hooks/useDocumentMeta'
 
 export default function Home() {
+  useDocumentMeta(
+    'RockHistory — La storia del rock dal 1960 a oggi',
+    `Scopri la storia di ${bands.length} band rock dal 1960 a oggi: discografia, hit e curiosità, band per band.`,
+  )
+
   const decades = useMemo(() => {
     const set = new Set(bands.map((b) => decadeOf(b.formedYear)))
     return ['Tutte', ...Array.from(set).sort()]
