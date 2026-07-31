@@ -4,15 +4,12 @@ import { bands } from '../data/bands'
 import { decadeOf } from '../types'
 import { GENRE_GROUPS, bandMatchesGenreGroup } from '../data/genreGroups'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
-import { useCountUp } from '../hooks/useCountUp'
 
 export default function Home() {
   useDocumentMeta(
     'RockHistory — La storia del rock dal 1960 a oggi',
     `Scopri la storia di ${bands.length} band rock dal 1960 a oggi: discografia, hit e curiosità, band per band.`,
   )
-
-  const bandCount = useCountUp(bands.length)
 
   const decades = useMemo(() => {
     const set = new Set(bands.map((b) => decadeOf(b.formedYear)))
@@ -35,8 +32,8 @@ export default function Home() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <section className="mb-12 text-center">
-        <p className="mb-3 font-heading text-xs font-semibold uppercase tracking-[0.3em] text-red-500 tabular-nums">
-          {bandCount} band · 1960 → oggi
+        <p className="mb-3 font-heading text-xs font-semibold uppercase tracking-[0.3em] text-red-500">
+          Top band dal 1960 ad oggi
         </p>
         <h1 className="font-display text-4xl leading-[0.95] tracking-tight text-white sm:text-6xl md:text-7xl">
           La storia del <span className="text-red-500">rock</span>,
