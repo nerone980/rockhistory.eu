@@ -10,3 +10,21 @@ DirectoryIndex index.html
   # per lasciare il routing alla SPA (React Router)
   RewriteRule ^ index.html [L]
 </IfModule>
+
+# index.html cambia ad ogni deploy (referenzia asset con hash diverso ogni volta),
+# quindi non va mai messo in cache: un proxy/CDN che lo cachea servirebbe un
+# riferimento a file JS/CSS ormai cancellati dal deploy successivo, causando
+# una pagina bianca (script 404 -> l'app React non parte).
+<IfModule mod_headers.c>
+  <FilesMatch "^index\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
+  # Gli asset con hash nel nome (assets/*.js, *.css) sono invece sicuri da
+  # cachare a lungo: cambiano nome ad ogni build, quindi non serviranno mai
+  # contenuto stale con lo stesso URL.
+  <FilesMatch "\.(js|css|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
