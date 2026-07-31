@@ -1,15 +1,21 @@
 import { useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import PosterCard from '../components/PosterCard'
+import AlbumOfTheDay from '../components/AlbumOfTheDay'
 import { bands } from '../data/bands'
 import { decadeOf } from '../types'
 import { GENRE_GROUPS, bandMatchesGenreGroup } from '../data/genreGroups'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
+import { useExploredCount } from '../hooks/useExploredBands'
 
 export default function Home() {
   useDocumentMeta(
     'RockHistory — La storia del rock dal 1960 a oggi',
     `Scopri la storia di ${bands.length} band rock dal 1960 a oggi: discografia, hit e curiosità, band per band.`,
   )
+
+  const [searchParams] = useSearchParams()
+  const exploredCount = useExploredCount()
 
   const decades = useMemo(() => {
     const set = new Set(bands.map((b) => decadeOf(b.formedYear)))
@@ -19,7 +25,10 @@ export default function Home() {
   const genreOptions = useMemo(() => ['Tutte', ...GENRE_GROUPS.map((g) => g.name)], [])
 
   const [decade, setDecade] = useState('Tutte')
-  const [genre, setGenre] = useState('Tutte')
+  const [genre, setGenre] = useState(() => {
+    const fromUrl = searchParams.get('genre')
+    return fromUrl && genreOptions.includes(fromUrl) ? fromUrl : 'Tutte'
+  })
 
   const filtered = useMemo(
     () =>
@@ -43,7 +52,14 @@ export default function Home() {
           Dalle locandine degli anni Sessanta alle band di oggi: scopri la storia dei gruppi, i
           loro dischi e le hit che hanno segnato ogni epoca.
         </p>
+        {exploredCount > 0 && (
+          <p className="mx-auto mt-4 max-w-xs font-heading text-xs uppercase tracking-wide text-white/40">
+            Hai esplorato {exploredCount} / {bands.length} band
+          </p>
+        )}
       </section>
+
+      <AlbumOfTheDay />
 
       <div className="mb-4 flex flex-wrap justify-center gap-2">
         {decades.map((d) => (
