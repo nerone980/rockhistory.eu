@@ -57,26 +57,17 @@ jobs:
           # La home FTP contiene le cartelle di più domini (è un account multi-dominio):
           # la webroot pubblica di questo dominio è la sottocartella www.rockhistory.eu/,
           # non la radice (la radice stessa nega la scrittura con "550 Permission denied").
+          # Il trasferimento in parallelo (--parallel=2) ha causato in passato un
+          # file troncato (CSS arrivato a 16KB invece dei ~34KB reali), rompendo
+          # il layout del sito. Trasferimento sequenziale e una seconda passata
+          # di mirror come verifica: se lftp rileva una dimensione diversa dal
+          # file locale, lo ricarica.
           lftp -e "
             set net:timeout 15;
             set net:max-retries 2;
             set ssl:verify-certificate no;
             open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER;
-            mirror --reverse --verbose --parallel=2 ./dist/ ./www.rockhistory.eu/;
-            bye
-          "
-          echo "== Confronto dimensioni file locali vs remoti =="
-          echo "-- locali --"
-          ls -la ./dist/assets/
-          echo "-- remoti --"
-          lftp -e "
-            set net:timeout 15;
-            set net:max-retries 2;
-            set ssl:verify-certificate no;
-            open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER;
-            cd www.rockhistory.eu;
-            ls -la;
-            cd assets;
-            ls -la;
+            mirror --reverse --verbose --delete ./dist/ ./www.rockhistory.eu/;
+            mirror --reverse --verbose --delete ./dist/ ./www.rockhistory.eu/;
             bye
           "
