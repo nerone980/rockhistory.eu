@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import PosterCard from '../components/PosterCard'
 import AlbumOfTheDay from '../components/AlbumOfTheDay'
+import SectionLabel from '../components/SectionLabel'
 import { bands } from '../data/bands'
 import { decadeOf } from '../types'
 import { GENRE_GROUPS, bandMatchesGenreGroup } from '../data/genreGroups'
@@ -57,6 +58,23 @@ export default function Home() {
             Hai esplorato {exploredCount} / {bands.length} band
           </p>
         )}
+      </section>
+
+      <section className="mx-auto mb-14 max-w-3xl space-y-2">
+        <SectionLabel>La storia del rock in breve</SectionLabel>
+        <p className="leading-relaxed text-white/70">
+          Il rock nasce a metà degli anni Cinquanta dall'incontro tra rhythm and blues, country e
+          gospel afroamericani, ma è nel decennio successivo che esplode come fenomeno globale:
+          la "British Invasion" guidata dai Beatles e dai Rolling Stones, la psichedelia della
+          West Coast e il blues rock elettrico ridisegnano il pop mondiale. Gli anni Settanta
+          moltiplicano i linguaggi — hard rock, progressive, glam, punk — mentre gli Ottanta
+          portano synth, MTV e l'ascesa dell'heavy metal. Il decennio successivo vede grunge e
+          alternative rock riportare rabbia e autenticità nelle classifiche, prima che gli anni
+          Duemila e Duemiladieci frammentino ulteriormente il genere in indie, post-punk revival
+          e nuove fusioni con elettronica e metal moderno. Sessant'anni dopo, il rock resta un
+          linguaggio in continua trasformazione, capace di reinventarsi ad ogni generazione senza
+          mai perdere la propria energia originaria.
+        </p>
       </section>
 
       <AlbumOfTheDay />
