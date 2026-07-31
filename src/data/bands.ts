@@ -11,6 +11,8 @@ export const coreBands: Band[] = [
     genres: ['Rock', 'Pop rock', 'Psichedelia'],
     members: ['John Lennon', 'Paul McCartney', 'George Harrison', 'Ringo Starr'],
     palette: ['#c0392b', '#f39c12'],
+    photoImage:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/The_Beatles_arrive_at_JFK_Airport.jpg?width=800',
     history:
       'Formatasi a Liverpool nel 1960 come evoluzione dei Quarrymen, la band raggiunge la fama mondiale nel 1963 con la "Beatlemania" scatenata nel Regno Unito e, dal 1964, negli Stati Uniti. Nel giro di un decennio i quattro di Liverpool ridefiniscono il pop e il rock: dagli esordi beat di "Please Please Me" all\'apertura psichedelica di "Revolver" e "Sgt. Pepper\'s Lonely Hearts Club Band", fino alla maturità compositiva di "Abbey Road". Lo scioglimento arriva nel 1970, ma l\'influenza del gruppo su armonia, produzione discografica e cultura pop resta ineguagliata.',
     albums: [
@@ -322,6 +324,7 @@ export const coreBands: Band[] = [
     genres: ['Rock', 'Blues rock', 'Hard rock'],
     members: ['Mick Jagger', 'Keith Richards', 'Charlie Watts', 'Ronnie Wood'],
     palette: ['#c0392b', '#1a1a1a'],
+    photoImage: 'https://commons.wikimedia.org/wiki/Special:FilePath/Rolling_Stones_1967.jpg?width=800',
     history:
       'Nati dalla passione condivisa per il blues americano, i Rolling Stones diventano in pochi anni l\'alter ego più ruvido dei Beatles. Con Mick Jagger e Keith Richards come motore compositivo, la band attraversa oltre sei decenni senza mai fermarsi, passando dal blues rock delle origini all\'hard rock di "Exile on Main St." fino ai tour stadio degli anni 2020, guadagnandosi l\'appellativo di "la più grande rock and roll band del mondo". La discografia della band è sterminata (oltre 25 album in studio): qui ne raccogliamo i capitoli più significativi di ogni decennio.',
     albums: [

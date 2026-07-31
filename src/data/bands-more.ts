@@ -43,6 +43,8 @@ export const moreBands: Band[] = [
     genres: ['Rock psichedelico', 'Blues rock'],
     members: ['Jim Morrison', 'Ray Manzarek', 'Robby Krieger', 'John Densmore'],
     palette: ['#1a1a1a', '#8e44ad'],
+    photoImage:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Jim_Morrison_1967%2C_from_a_promotion_picture_with_The_Doors.jpg?width=800',
     history:
       'Guidati dal carisma sciamanico di Jim Morrison, mescolano poesia, blues e psichedelia. La morte di Morrison nel 1973 chiude prematuramente una delle carriere più mitizzate del rock.',
     albums: [
@@ -213,6 +215,7 @@ export const moreBands: Band[] = [
     genres: ['Pop rock', 'Rock psichedelico', 'Surf rock'],
     members: ['Brian Wilson', 'Mike Love', 'Al Jardine', 'Carl Wilson', 'Dennis Wilson'],
     palette: ['#3498db', '#f1c40f'],
+    photoImage: 'https://commons.wikimedia.org/wiki/Special:FilePath/The_Beach_Boys_1962.jpg?width=800',
     history:
       'Nati cantando il mito californiano del surf, sotto la guida compositiva di Brian Wilson raggiungono vertici di sofisticazione pop con "Pet Sounds", influenzando profondamente i Beatles stessi.',
     albums: [
@@ -284,6 +287,7 @@ export const moreBands: Band[] = [
     genres: ['Rock', 'Rock and roll', 'Britpop'],
     members: ['Ray Davies', 'Dave Davies', 'Mick Avory'],
     palette: ['#c0392b', '#2c3e50'],
+    photoImage: 'https://commons.wikimedia.org/wiki/Special:FilePath/Kinks_1969.JPG?width=800',
     history:
       'Precursori dell\'hard rock con il riff distorto di "You Really Got Me", si distinguono poi per la scrittura satirica e osservativa di Ray Davies sulla società inglese.',
     albums: [
@@ -358,6 +362,8 @@ export const moreBands: Band[] = [
     genres: ['Rock sperimentale', 'Proto-punk', 'Art rock'],
     members: ['Lou Reed', 'John Cale', 'Sterling Morrison', 'Maureen Tucker'],
     palette: ['#1a1a1a', '#f1c40f'],
+    photoImage:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Velvet_Underground_%26_Nico_publicity_photo.jpg?width=800',
     history:
       'Nonostante vendite modeste, la loro fusione di rock, avanguardia e testi crudi su New York (con il sostegno di Andy Warhol) influenza generazioni di musicisti punk e alternative.',
     albums: [
@@ -803,6 +809,7 @@ export const moreBands: Band[] = [
     genres: ['Heavy metal', 'Doom metal', 'Hard rock'],
     members: ['Ozzy Osbourne', 'Tony Iommi', 'Geezer Butler', 'Bill Ward'],
     palette: ['#0a0a0a', '#7f0000'],
+    photoImage: 'https://commons.wikimedia.org/wiki/Special:FilePath/Black_Sabbath_%281970%29.jpg?width=800',
     history:
       'Considerati gli inventori dell\'heavy metal, con riff pesanti e cupi ispirati al mondo operaio di Birmingham e a un immaginario horror/occulto mai visto prima nel rock.',
     albums: [
@@ -1201,6 +1208,8 @@ export const moreBands: Band[] = [
     genres: ['Southern rock', 'Hard rock'],
     members: ['Ronnie Van Zant', 'Gary Rossington', 'Allen Collins'],
     palette: ['#8b6b3d', '#c0392b'],
+    photoImage:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Lynyrd_Skynyrd_and_The_Honkettes_1976.jpg?width=800',
     history:
       'Simbolo del southern rock, la band viene colpita da una tragedia nel 1977 quando un incidente aereo uccide il cantante Ronnie Van Zant e altri membri, poco dopo l\'apice del successo.',
     albums: [
@@ -1356,6 +1365,7 @@ export const moreBands: Band[] = [
     genres: ['Rock progressivo', 'Hard rock'],
     members: ['Geddy Lee', 'Alex Lifeson', 'Neil Peart'],
     palette: ['#1a1a1a', '#c0392b'],
+    photoImage: 'https://commons.wikimedia.org/wiki/Special:FilePath/Rush_band_1970s.jpg?width=800',
     history:
       'Trio canadese noto per il virtuosismo tecnico e i testi filosofici di Neil Peart, capaci di fondere progressive rock e hard rock in un sound identificabile in pochissime note.',
     albums: [
@@ -1418,6 +1428,7 @@ export const moreBands: Band[] = [
     genres: ['Hard rock', 'Shock rock'],
     members: ['Alice Cooper', 'Michael Bruce', 'Dennis Dunaway'],
     palette: ['#1a1a1a', '#95a5a6'],
+    photoImage: 'https://commons.wikimedia.org/wiki/Special:FilePath/Alice_Cooper_1972.jpg?width=800',
     history:
       'Pioniere dello shock rock, con trucco horror e spettacoli teatrali macabri (ghigliottine, serpenti), influenza profondamente l\'estetica del rock e metal successivo.',
     albums: [
@@ -1490,6 +1501,7 @@ export const moreBands: Band[] = [
     genres: ['Punk rock'],
     members: ['Johnny Rotten', 'Steve Jones', 'Glen Matlock', 'Sid Vicious', 'Paul Cook'],
     palette: ['#f1c40f', '#1a1a1a'],
+    photoImage: 'https://commons.wikimedia.org/wiki/Special:FilePath/Sex_Pistols_in_Paradiso.jpg?width=800',
     history:
       'Simbolo della rivolta punk britannica, dura appena tre anni ma scatena uno scandalo mediatico enorme e ridefinisce il rapporto tra musica, provocazione e classe sociale.',
     albums: [
@@ -1636,6 +1648,8 @@ export const moreBands: Band[] = [
     genres: ['Art rock', 'New wave', 'Post-punk'],
     members: ['David Byrne', 'Tina Weymouth', 'Chris Frantz', 'Jerry Harrison'],
     palette: ['#1a1a1a', '#e67e22'],
+    photoImage:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Talking_Heads_%281979_Sire_publicity_photo%29.jpg?width=800',
     history:
       'Nati nella scena punk/new wave del CBGB newyorkese, sotto la guida artistica eccentrica di David Byrne fondono art rock, funk e world music in un sound intellettuale e imprevedibile.',
     albums: [
