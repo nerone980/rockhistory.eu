@@ -6,6 +6,7 @@ import Home from './pages/Home'
 import BandDetail from './pages/BandDetail'
 import AlbumDetail from './pages/AlbumDetail'
 import Timeline from './pages/Timeline'
+import RockHistoryPage from './pages/RockHistoryPage'
 import Preferiti from './pages/Preferiti'
 import Quiz from './pages/Quiz'
 import Privacy from './pages/Privacy'
@@ -22,6 +23,7 @@ function App() {
           <Route path="/band/:bandSlug" element={<BandDetail />} />
           <Route path="/band/:bandSlug/album/:albumSlug" element={<AlbumDetail />} />
           <Route path="/timeline" element={<Timeline />} />
+          <Route path="/storia" element={<RockHistoryPage />} />
           <Route path="/preferiti" element={<Preferiti />} />
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/privacy" element={<Privacy />} />

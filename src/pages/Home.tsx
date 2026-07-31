@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import PosterCard from '../components/PosterCard'
 import AlbumOfTheDay from '../components/AlbumOfTheDay'
 import SectionLabel from '../components/SectionLabel'
@@ -60,7 +60,10 @@ export default function Home() {
         )}
       </section>
 
-      <section className="mx-auto mb-14 max-w-3xl space-y-2">
+      <Link
+        to="/storia"
+        className="group mx-auto mb-14 block max-w-3xl space-y-2 rounded-xl border border-transparent p-4 transition-colors hover:border-white/10 hover:bg-white/[0.02]"
+      >
         <SectionLabel>La storia del rock in breve</SectionLabel>
         <p className="leading-relaxed text-white/70">
           Il rock nasce a metà degli anni Cinquanta dall'incontro tra rhythm and blues, country e
@@ -75,7 +78,10 @@ export default function Home() {
           linguaggio in continua trasformazione, capace di reinventarsi ad ogni generazione senza
           mai perdere la propria energia originaria.
         </p>
-      </section>
+        <p className="font-heading text-xs font-semibold uppercase tracking-wide text-red-400 transition-colors group-hover:text-red-300">
+          Leggi la storia completa, con influenze e grafico dell'evoluzione dei generi →
+        </p>
+      </Link>
 
       <AlbumOfTheDay />
 
