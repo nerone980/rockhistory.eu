@@ -14,7 +14,7 @@ export default function PosterCard({ band }: { band: Band }) {
         subtitle={span}
         palette={band.palette}
         badge={decadeOf(band.formedYear)}
-        imageUrl={band.photoImage}
+        variant="turntable"
       />
       <p className="mt-2 truncate font-heading text-sm text-white/50 transition-colors group-hover:text-white/70">
         {band.genres.join(' · ')}
