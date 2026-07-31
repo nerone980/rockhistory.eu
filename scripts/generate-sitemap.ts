@@ -7,7 +7,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const SITE_URL = 'https://www.rockhistory.eu'
 
-const urls: { loc: string; priority: string }[] = [{ loc: '/', priority: '1.0' }]
+const urls: { loc: string; priority: string }[] = [
+  { loc: '/', priority: '1.0' },
+  { loc: '/timeline', priority: '0.7' },
+]
 
 for (const band of bands) {
   urls.push({ loc: `/band/${band.slug}`, priority: '0.8' })

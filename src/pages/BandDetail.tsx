@@ -1,16 +1,10 @@
 import { Link, Navigate, useParams } from 'react-router-dom'
 import Poster from '../components/Poster'
-import { getBandBySlug } from '../data/bands'
+import PosterCard from '../components/PosterCard'
+import SectionLabel from '../components/SectionLabel'
+import { bands, getBandBySlug } from '../data/bands'
+import { relatedBands } from '../data/genreGroups'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
-
-function SectionLabel({ children }: { children: string }) {
-  return (
-    <h2 className="flex items-center gap-2 font-heading text-xs font-semibold uppercase tracking-[0.2em] text-white/40">
-      <span className="h-px w-4 bg-red-500/70" />
-      {children}
-    </h2>
-  )
-}
 
 export default function BandDetail() {
   const { bandSlug = '' } = useParams()
@@ -26,12 +20,28 @@ export default function BandDetail() {
   if (!band) return <Navigate to="/" replace />
 
   const span = band.disbandedYear ? `${band.formedYear}–${band.disbandedYear}` : `dal ${band.formedYear}`
+  const accent = band.palette[1]
+  const isVintage = band.formedYear < 1980
+  const similar = relatedBands(band, bands)
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <div
+      className="relative mx-auto max-w-6xl px-4 py-10 sm:px-6"
+      style={{ '--accent': accent } as React.CSSProperties}
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-10 left-1/2 -z-10 h-72 w-[min(90%,900px)] -translate-x-1/2 rounded-full blur-3xl"
+        style={{
+          backgroundColor: accent,
+          opacity: isVintage ? 0.1 : 0.14,
+          filter: isVintage ? 'blur(80px) sepia(0.4)' : 'blur(90px)',
+        }}
+      />
+
       <Link
         to="/"
-        className="mb-6 inline-flex items-center gap-1 text-sm text-white/50 transition-colors hover:text-red-400"
+        className="mb-6 inline-flex items-center gap-1 text-sm text-white/50 transition-colors hover:text-[var(--accent)]"
       >
         ← Tutte le band
       </Link>
@@ -53,12 +63,12 @@ export default function BandDetail() {
           </p>
 
           <div className="mt-6 space-y-1.5">
-            <SectionLabel>Formazione</SectionLabel>
+            <SectionLabel accent={accent}>Formazione</SectionLabel>
             <p className="text-white/80">{band.members.join(', ')}</p>
           </div>
 
           <div className="mt-6 space-y-1.5">
-            <SectionLabel>Storia della band</SectionLabel>
+            <SectionLabel accent={accent}>Storia della band</SectionLabel>
             <p className="leading-relaxed text-white/80">{band.history}</p>
           </div>
         </div>
@@ -81,6 +91,19 @@ export default function BandDetail() {
           </Link>
         ))}
       </div>
+
+      {similar.length > 0 && (
+        <div className="mt-14">
+          <div className="mb-6 flex items-baseline gap-3">
+            <h2 className="font-display text-3xl tracking-tight text-white">Band simili</h2>
+          </div>
+          <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+            {similar.map((b) => (
+              <PosterCard key={b.slug} band={b} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

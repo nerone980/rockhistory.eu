@@ -15,7 +15,7 @@ function GuitarSilhouette({ className }: { className?: string }) {
   )
 }
 
-function VinylRecord({ className }: { className?: string }) {
+export function VinylRecord({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 200 200" fill="none" className={className} aria-hidden>
       <circle cx="100" cy="100" r="98" fill="currentColor" />

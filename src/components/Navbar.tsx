@@ -15,9 +15,12 @@ export default function Navbar() {
             Rock<span className="text-red-500">History</span>
           </span>
         </Link>
-        <span className="hidden font-heading text-sm uppercase tracking-widest text-white/50 sm:block">
-          1960 → oggi
-        </span>
+        <Link
+          to="/timeline"
+          className="font-heading text-sm uppercase tracking-widest text-white/50 transition-colors hover:text-red-400"
+        >
+          Timeline
+        </Link>
       </nav>
     </header>
   )
