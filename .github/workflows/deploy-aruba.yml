@@ -65,3 +65,18 @@ jobs:
             mirror --reverse --verbose --parallel=2 ./dist/ ./www.rockhistory.eu/;
             bye
           "
+          echo "== Confronto dimensioni file locali vs remoti =="
+          echo "-- locali --"
+          ls -la ./dist/assets/
+          echo "-- remoti --"
+          lftp -e "
+            set net:timeout 15;
+            set net:max-retries 2;
+            set ssl:verify-certificate no;
+            open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER;
+            cd www.rockhistory.eu;
+            ls -la;
+            cd assets;
+            ls -la;
+            bye
+          "
