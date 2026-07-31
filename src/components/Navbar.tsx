@@ -25,7 +25,7 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-x-2 gap-y-1 sm:gap-x-3">
           <SearchBar />
           <button
             type="button"
@@ -55,19 +55,19 @@ export default function Navbar() {
           </Link>
           <Link
             to="/quiz"
-            className="hidden font-heading text-sm uppercase tracking-widest text-white/50 transition-colors hover:text-red-400 sm:block"
+            className="font-heading text-xs uppercase tracking-widest text-white/50 transition-colors hover:text-red-400 sm:text-sm sm:tracking-wide"
           >
             Quiz
           </Link>
           <Link
             to="/storia"
-            className="hidden font-heading text-sm uppercase tracking-widest text-white/50 transition-colors hover:text-red-400 md:block"
+            className="font-heading text-xs uppercase tracking-widest text-white/50 transition-colors hover:text-red-400 sm:text-sm sm:tracking-wide"
           >
             Storia
           </Link>
           <Link
             to="/timeline"
-            className="font-heading text-sm uppercase tracking-widest text-white/50 transition-colors hover:text-red-400"
+            className="font-heading text-xs uppercase tracking-widest text-white/50 transition-colors hover:text-red-400 sm:text-sm sm:tracking-wide"
           >
             Timeline
           </Link>
