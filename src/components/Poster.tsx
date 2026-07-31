@@ -9,7 +9,7 @@ interface PosterProps {
 export default function Poster({ title, subtitle, palette, badge, imageUrl }: PosterProps) {
   return (
     <div
-      className="relative flex aspect-[3/4] w-full flex-col justify-end overflow-hidden rounded-lg border border-white/10 p-4 shadow-lg transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.02] group-hover:border-white/20 group-hover:shadow-[0_24px_48px_-12px_var(--glow)]"
+      className="poster-tilt relative flex aspect-[3/4] w-full flex-col justify-end overflow-hidden rounded-lg border border-white/10 p-4 shadow-lg group-hover:border-white/20 group-hover:shadow-[0_24px_48px_-12px_var(--glow)]"
       style={{
         '--glow': `${palette[0]}80`,
         ...(imageUrl

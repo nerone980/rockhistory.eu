@@ -5,6 +5,7 @@ import MusicalBackground from './components/MusicalBackground'
 import Home from './pages/Home'
 import BandDetail from './pages/BandDetail'
 import AlbumDetail from './pages/AlbumDetail'
+import Timeline from './pages/Timeline'
 import Privacy from './pages/Privacy'
 import NotFound from './pages/NotFound'
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/band/:bandSlug" element={<BandDetail />} />
           <Route path="/band/:bandSlug/album/:albumSlug" element={<AlbumDetail />} />
+          <Route path="/timeline" element={<Timeline />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

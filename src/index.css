@@ -48,3 +48,43 @@ body {
   background-color: #3a1414;
   border-radius: 999px;
 }
+
+/* Leggero tilt 3D sui poster in hover, oltre a sollevamento e zoom */
+.poster-tilt {
+  transition:
+    transform 300ms ease-out,
+    box-shadow 300ms ease-out,
+    border-color 300ms ease-out;
+}
+.group:hover .poster-tilt {
+  transform: perspective(900px) translateY(-6px) scale(1.02) rotateX(2deg) rotateY(-3deg);
+}
+
+/* Rotazione continua e lenta per i vinili decorativi */
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slow {
+  animation: spin-slow 16s linear infinite;
+}
+
+/* Pulsazione discreta per il badge "Hit" nelle tracklist */
+@keyframes hit-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(239, 68, 68, 0);
+  }
+}
+.hit-badge {
+  animation: hit-pulse 2.2s ease-in-out infinite;
+}
+
+/* Orizzontale con scrollbar sottile, usata nella timeline */
+.scrollbar-thin::-webkit-scrollbar {
+  height: 8px;
+}

@@ -82,3 +82,10 @@ export function genreGroupOf(genre: string): string | undefined {
 export function bandMatchesGenreGroup(band: Band, groupName: string): boolean {
   return band.genres.some((g) => genreGroupOf(g) === groupName)
 }
+
+export function relatedBands(band: Band, allBands: Band[], limit = 6): Band[] {
+  const groups = new Set(band.genres.map(genreGroupOf).filter(Boolean))
+  return allBands
+    .filter((b) => b.slug !== band.slug && b.genres.some((g) => groups.has(genreGroupOf(g))))
+    .slice(0, limit)
+}
