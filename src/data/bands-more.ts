@@ -43,6 +43,8 @@ export const moreBands: Band[] = [
     genres: ['Rock psichedelico', 'Blues rock'],
     members: ['Jim Morrison', 'Ray Manzarek', 'Robby Krieger', 'John Densmore'],
     palette: ['#1a1a1a', '#8e44ad'],
+    photoImage:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Jim_Morrison_1967%2C_from_a_promotion_picture_with_The_Doors.jpg?width=800',
     history:
       'Guidati dal carisma sciamanico di Jim Morrison, mescolano poesia, blues e psichedelia. La morte di Morrison nel 1973 chiude prematuramente una delle carriere più mitizzate del rock.',
     albums: [
@@ -213,6 +215,7 @@ export const moreBands: Band[] = [
     genres: ['Pop rock', 'Rock psichedelico', 'Surf rock'],
     members: ['Brian Wilson', 'Mike Love', 'Al Jardine', 'Carl Wilson', 'Dennis Wilson'],
     palette: ['#3498db', '#f1c40f'],
+    photoImage: 'https://commons.wikimedia.org/wiki/Special:FilePath/The_Beach_Boys_1962.jpg?width=800',
     history:
       'Nati cantando il mito californiano del surf, sotto la guida compositiva di Brian Wilson raggiungono vertici di sofisticazione pop con "Pet Sounds", influenzando profondamente i Beatles stessi.',
     albums: [
@@ -284,6 +287,7 @@ export const moreBands: Band[] = [
     genres: ['Rock', 'Rock and roll', 'Britpop'],
     members: ['Ray Davies', 'Dave Davies', 'Mick Avory'],
     palette: ['#c0392b', '#2c3e50'],
+    photoImage: 'https://commons.wikimedia.org/wiki/Special:FilePath/Kinks_1969.JPG?width=800',
     history:
       'Precursori dell\'hard rock con il riff distorto di "You Really Got Me", si distinguono poi per la scrittura satirica e osservativa di Ray Davies sulla società inglese.',
     albums: [
@@ -358,6 +362,8 @@ export const moreBands: Band[] = [
     genres: ['Rock sperimentale', 'Proto-punk', 'Art rock'],
     members: ['Lou Reed', 'John Cale', 'Sterling Morrison', 'Maureen Tucker'],
     palette: ['#1a1a1a', '#f1c40f'],
+    photoImage:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Velvet_Underground_%26_Nico_publicity_photo.jpg?width=800',
     history:
       'Nonostante vendite modeste, la loro fusione di rock, avanguardia e testi crudi su New York (con il sostegno di Andy Warhol) influenza generazioni di musicisti punk e alternative.',
     albums: [
@@ -803,6 +809,7 @@ export const moreBands: Band[] = [
     genres: ['Heavy metal', 'Doom metal', 'Hard rock'],
     members: ['Ozzy Osbourne', 'Tony Iommi', 'Geezer Butler', 'Bill Ward'],
     palette: ['#0a0a0a', '#7f0000'],
+    photoImage: 'https://commons.wikimedia.org/wiki/Special:FilePath/Black_Sabbath_%281970%29.jpg?width=800',
     history:
       'Considerati gli inventori dell\'heavy metal, con riff pesanti e cupi ispirati al mondo operaio di Birmingham e a un immaginario horror/occulto mai visto prima nel rock.',
     albums: [
