@@ -93,14 +93,37 @@ jobs:
 
       - name: Verifica diagnostica sito live
         run: |
-          JS_FILE=$(basename "$(ls ./dist/assets/index-*.js)")
-          CSS_FILE=$(basename "$(ls ./dist/assets/index-*.css)")
-          echo "== Headers https://www.rockhistory.eu/ =="
-          curl -sI --max-time 15 https://www.rockhistory.eu/ || echo "CURL FALLITO"
-          echo "== Primi 2000 byte dell'HTML =="
-          curl -s --max-time 15 https://www.rockhistory.eu/ | head -c 2000 || echo "CURL FALLITO"
-          echo ""
-          echo "== Headers asset JS ($JS_FILE) =="
-          curl -sI --max-time 15 "https://www.rockhistory.eu/assets/$JS_FILE" || echo "CURL FALLITO"
-          echo "== Headers asset CSS ($CSS_FILE) =="
-          curl -sI --max-time 15 "https://www.rockhistory.eu/assets/$CSS_FILE" || echo "CURL FALLITO"
+          echo "== Headers https://www.rockhistory.eu/ (no-cache) =="
+          curl -sI --max-time 15 -H "Cache-Control: no-cache" -H "Pragma: no-cache" https://www.rockhistory.eu/ || echo "CURL FALLITO"
+          echo "== HTML completo live =="
+          HTML=$(curl -s --max-time 15 -H "Cache-Control: no-cache" -H "Pragma: no-cache" https://www.rockhistory.eu/)
+          echo "$HTML"
+          LIVE_JS=$(echo "$HTML" | grep -o '/assets/index-[^"]*\.js' | head -1)
+          LIVE_CSS=$(echo "$HTML" | grep -o '/assets/index-[^"]*\.css' | head -1)
+          echo "== File JS referenziato dall'HTML live: $LIVE_JS =="
+          echo "== File CSS referenziato dall'HTML live: $LIVE_CSS =="
+          echo "== Headers per quel file JS (quello che il browser richiede davvero) =="
+          curl -sI --max-time 15 "https://www.rockhistory.eu${LIVE_JS}" || echo "CURL FALLITO"
+          echo "== Headers per quel file CSS (quello che il browser richiede davvero) =="
+          curl -sI --max-time 15 "https://www.rockhistory.eu${LIVE_CSS}" || echo "CURL FALLITO"
+          echo "== Listato remoto attuale della cartella assets (cosa esiste davvero sul server) =="
+          FTP_SERVER=$(printf '%s' "$FTP_SERVER" | tr -d '\r\n' | xargs)
+          FTP_USERNAME=$(printf '%s' "$FTP_USERNAME" | tr -d '\r\n' | xargs)
+          FTP_PASSWORD=$(printf '%s' "$FTP_PASSWORD" | tr -d '\r\n')
+          FTP_SERVER=${FTP_SERVER#ftp://}
+          FTP_SERVER=${FTP_SERVER#ftps://}
+          FTP_SERVER=${FTP_SERVER%/}
+          lftp -e "
+            set net:timeout 15;
+            set net:max-retries 2;
+            set ftp:ssl-allow no;
+            set ssl:verify-certificate no;
+            open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER;
+            cd www.rockhistory.eu;
+            cat index.html;
+            bye
+          "
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
