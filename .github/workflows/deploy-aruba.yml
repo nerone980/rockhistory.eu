@@ -57,17 +57,36 @@ jobs:
           # La home FTP contiene le cartelle di più domini (è un account multi-dominio):
           # la webroot pubblica di questo dominio è la sottocartella www.rockhistory.eu/,
           # non la radice (la radice stessa nega la scrittura con "550 Permission denied").
-          # Il trasferimento in parallelo (--parallel=2) ha causato in passato un
-          # file troncato (CSS arrivato a 16KB invece dei ~34KB reali), rompendo
-          # il layout del sito. Trasferimento sequenziale e una seconda passata
-          # di mirror come verifica: se lftp rileva una dimensione diversa dal
-          # file locale, lo ricarica.
+          # Il file CSS arrivava troncato a esattamente 16384 byte (2^14): è la
+          # dimensione massima di un singolo record TLS. lftp negozia AUTH TLS
+          # automaticamente quando il server la supporta, e su questo server c'è
+          # evidentemente un bug nella gestione dei record TLS successivi al primo
+          # sul canale dati per trasferimenti più grandi di un record. Disabilita
+          # del tutto la negoziazione TLS (ftp:ssl-allow no) per usare FTP semplice,
+          # eliminando il canale dati cifrato che causava il troncamento.
+          # Mantiene comunque il trasferimento sequenziale e una doppia passata di
+          # mirror come verifica extra sulle dimensioni dei file.
           lftp -e "
             set net:timeout 15;
             set net:max-retries 2;
+            set ftp:ssl-allow no;
             set ssl:verify-certificate no;
             open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER;
             mirror --reverse --verbose --delete ./dist/ ./www.rockhistory.eu/;
             mirror --reverse --verbose --delete ./dist/ ./www.rockhistory.eu/;
+            bye
+          "
+          echo "== Verifica dimensioni dopo il deploy =="
+          echo "-- locali --"
+          ls -la ./dist/assets/
+          echo "-- remote --"
+          lftp -e "
+            set net:timeout 15;
+            set net:max-retries 2;
+            set ftp:ssl-allow no;
+            set ssl:verify-certificate no;
+            open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER;
+            cd www.rockhistory.eu/assets;
+            ls -la;
             bye
           "
