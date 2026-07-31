@@ -86,8 +86,19 @@ export default function AlbumDetail() {
                       </span>
                     )}
                   </span>
-                  <span className="relative shrink-0 font-heading text-sm tabular-nums text-white/40">
-                    {formatDuration(track.durationSec)}
+                  <span className="relative flex shrink-0 items-center gap-3">
+                    <a
+                      href={`https://genius.com/search?q=${encodeURIComponent(`${band.name} ${track.title}`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-heading text-xs uppercase tracking-wide text-white/30 transition-colors hover:text-[var(--accent)]"
+                      aria-label={`Cerca il testo di ${track.title} su Genius`}
+                    >
+                      Testo ↗
+                    </a>
+                    <span className="font-heading text-sm tabular-nums text-white/40">
+                      {formatDuration(track.durationSec)}
+                    </span>
                   </span>
                 </li>
               ))}
