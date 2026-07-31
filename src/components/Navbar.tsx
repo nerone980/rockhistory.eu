@@ -60,6 +60,12 @@ export default function Navbar() {
             Quiz
           </Link>
           <Link
+            to="/storia"
+            className="hidden font-heading text-sm uppercase tracking-widest text-white/50 transition-colors hover:text-red-400 md:block"
+          >
+            Storia
+          </Link>
+          <Link
             to="/timeline"
             className="font-heading text-sm uppercase tracking-widest text-white/50 transition-colors hover:text-red-400"
           >
