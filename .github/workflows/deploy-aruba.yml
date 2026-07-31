@@ -90,3 +90,17 @@ jobs:
             ls -la;
             bye
           "
+
+      - name: Verifica diagnostica sito live
+        run: |
+          JS_FILE=$(basename "$(ls ./dist/assets/index-*.js)")
+          CSS_FILE=$(basename "$(ls ./dist/assets/index-*.css)")
+          echo "== Headers https://www.rockhistory.eu/ =="
+          curl -sI --max-time 15 https://www.rockhistory.eu/ || echo "CURL FALLITO"
+          echo "== Primi 2000 byte dell'HTML =="
+          curl -s --max-time 15 https://www.rockhistory.eu/ | head -c 2000 || echo "CURL FALLITO"
+          echo ""
+          echo "== Headers asset JS ($JS_FILE) =="
+          curl -sI --max-time 15 "https://www.rockhistory.eu/assets/$JS_FILE" || echo "CURL FALLITO"
+          echo "== Headers asset CSS ($CSS_FILE) =="
+          curl -sI --max-time 15 "https://www.rockhistory.eu/assets/$CSS_FILE" || echo "CURL FALLITO"
