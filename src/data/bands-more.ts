@@ -1208,6 +1208,8 @@ export const moreBands: Band[] = [
     genres: ['Southern rock', 'Hard rock'],
     members: ['Ronnie Van Zant', 'Gary Rossington', 'Allen Collins'],
     palette: ['#8b6b3d', '#c0392b'],
+    photoImage:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Lynyrd_Skynyrd_and_The_Honkettes_1976.jpg?width=800',
     history:
       'Simbolo del southern rock, la band viene colpita da una tragedia nel 1977 quando un incidente aereo uccide il cantante Ronnie Van Zant e altri membri, poco dopo l\'apice del successo.',
     albums: [
@@ -1363,6 +1365,7 @@ export const moreBands: Band[] = [
     genres: ['Rock progressivo', 'Hard rock'],
     members: ['Geddy Lee', 'Alex Lifeson', 'Neil Peart'],
     palette: ['#1a1a1a', '#c0392b'],
+    photoImage: 'https://commons.wikimedia.org/wiki/Special:FilePath/Rush_band_1970s.jpg?width=800',
     history:
       'Trio canadese noto per il virtuosismo tecnico e i testi filosofici di Neil Peart, capaci di fondere progressive rock e hard rock in un sound identificabile in pochissime note.',
     albums: [
@@ -1425,6 +1428,7 @@ export const moreBands: Band[] = [
     genres: ['Hard rock', 'Shock rock'],
     members: ['Alice Cooper', 'Michael Bruce', 'Dennis Dunaway'],
     palette: ['#1a1a1a', '#95a5a6'],
+    photoImage: 'https://commons.wikimedia.org/wiki/Special:FilePath/Alice_Cooper_1972.jpg?width=800',
     history:
       'Pioniere dello shock rock, con trucco horror e spettacoli teatrali macabri (ghigliottine, serpenti), influenza profondamente l\'estetica del rock e metal successivo.',
     albums: [
@@ -1497,6 +1501,7 @@ export const moreBands: Band[] = [
     genres: ['Punk rock'],
     members: ['Johnny Rotten', 'Steve Jones', 'Glen Matlock', 'Sid Vicious', 'Paul Cook'],
     palette: ['#f1c40f', '#1a1a1a'],
+    photoImage: 'https://commons.wikimedia.org/wiki/Special:FilePath/Sex_Pistols_in_Paradiso.jpg?width=800',
     history:
       'Simbolo della rivolta punk britannica, dura appena tre anni ma scatena uno scandalo mediatico enorme e ridefinisce il rapporto tra musica, provocazione e classe sociale.',
     albums: [
@@ -1643,6 +1648,8 @@ export const moreBands: Band[] = [
     genres: ['Art rock', 'New wave', 'Post-punk'],
     members: ['David Byrne', 'Tina Weymouth', 'Chris Frantz', 'Jerry Harrison'],
     palette: ['#1a1a1a', '#e67e22'],
+    photoImage:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Talking_Heads_%281979_Sire_publicity_photo%29.jpg?width=800',
     history:
       'Nati nella scena punk/new wave del CBGB newyorkese, sotto la guida artistica eccentrica di David Byrne fondono art rock, funk e world music in un sound intellettuale e imprevedibile.',
     albums: [
