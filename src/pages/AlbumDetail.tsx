@@ -1,6 +1,7 @@
 import { Link, Navigate, useParams } from 'react-router-dom'
 import Poster from '../components/Poster'
 import SectionLabel from '../components/SectionLabel'
+import ShareButton from '../components/ShareButton'
 import { VinylRecord } from '../components/MusicalBackground'
 import { getAlbum } from '../data/bands'
 import { formatDuration } from '../types'
@@ -27,12 +28,15 @@ export default function AlbumDetail() {
       className="mx-auto max-w-6xl px-4 py-10 sm:px-6"
       style={{ '--accent': accent } as React.CSSProperties}
     >
-      <Link
-        to={`/band/${band.slug}`}
-        className="mb-6 inline-flex items-center gap-1 text-sm text-white/50 transition-colors hover:text-[var(--accent)]"
-      >
-        ← {band.name}
-      </Link>
+      <div className="mb-6 flex items-center justify-between gap-3">
+        <Link
+          to={`/band/${band.slug}`}
+          className="inline-flex items-center gap-1 text-sm text-white/50 transition-colors hover:text-[var(--accent)]"
+        >
+          ← {band.name}
+        </Link>
+        <ShareButton title={`${album.title} — ${band.name}`} />
+      </div>
 
       <div className="grid gap-8 sm:grid-cols-[280px_1fr]">
         <div className="group relative mx-auto w-full max-w-xs sm:mx-0">

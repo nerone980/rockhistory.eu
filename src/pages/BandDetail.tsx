@@ -2,13 +2,18 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import Poster from '../components/Poster'
 import PosterCard from '../components/PosterCard'
 import SectionLabel from '../components/SectionLabel'
+import FavoriteButton from '../components/FavoriteButton'
+import ShareButton from '../components/ShareButton'
 import { bands, getBandBySlug } from '../data/bands'
-import { relatedBands } from '../data/genreGroups'
+import { relatedBands, genreGroupOf } from '../data/genreGroups'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
+import { useMarkExplored } from '../hooks/useExploredBands'
+import { useFavorites } from '../hooks/useFavorites'
 
 export default function BandDetail() {
   const { bandSlug = '' } = useParams()
   const band = getBandBySlug(bandSlug)
+  const { isFavorite, toggleFavorite } = useFavorites()
 
   useDocumentMeta(
     band ? `${band.name} — Storia, discografia e dischi | RockHistory` : 'RockHistory',
@@ -16,6 +21,8 @@ export default function BandDetail() {
       ? `${band.name}: storia della band, formazione e discografia completa (${band.albums.length} album) su RockHistory.`
       : '',
   )
+
+  useMarkExplored(band?.slug ?? '')
 
   if (!band) return <Navigate to="/" replace />
 
@@ -39,16 +46,24 @@ export default function BandDetail() {
         }}
       />
 
-      <Link
-        to="/"
-        className="mb-6 inline-flex items-center gap-1 text-sm text-white/50 transition-colors hover:text-[var(--accent)]"
-      >
-        ← Tutte le band
-      </Link>
+      <div className="mb-6 flex items-center justify-between gap-3">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-1 text-sm text-white/50 transition-colors hover:text-[var(--accent)]"
+        >
+          ← Tutte le band
+        </Link>
+        <ShareButton title={band.name} />
+      </div>
 
       <div className="grid gap-8 sm:grid-cols-[280px_1fr]">
-        <div className="mx-auto w-full max-w-xs sm:mx-0">
+        <div className="relative mx-auto w-full max-w-xs sm:mx-0">
           <Poster title={band.name} subtitle={span} palette={band.palette} imageUrl={band.photoImage} />
+          <FavoriteButton
+            className="absolute right-3 top-3"
+            active={isFavorite(band.slug)}
+            onToggle={() => toggleFavorite(band.slug)}
+          />
         </div>
 
         <div>
@@ -59,7 +74,17 @@ export default function BandDetail() {
             {band.origin} · {span}
           </p>
           <p className="mt-1 font-heading text-sm uppercase tracking-wide text-white/40">
-            {band.genres.join(' · ')}
+            {band.genres.map((g, i) => (
+              <span key={g}>
+                {i > 0 && ' · '}
+                <Link
+                  to={`/?genre=${encodeURIComponent(genreGroupOf(g) ?? '')}`}
+                  className="transition-colors hover:text-[var(--accent)]"
+                >
+                  {g}
+                </Link>
+              </span>
+            ))}
           </p>
 
           <div className="mt-6 space-y-1.5">
