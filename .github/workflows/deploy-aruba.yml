@@ -27,6 +27,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Recupera le copertine ufficiali degli album via Spotify Web API (Client
+      # Credentials flow: nessun login utente, solo dati pubblici del catalogo).
+      # Se le secret non sono configurate lo script scrive un file vuoto e il
+      # sito continua a usare le locandine generate, senza far fallire la build.
+      - name: Recupera copertine da Spotify
+        env:
+          SPOTIFY_CLIENTID: ${{ secrets.SPOTIFY_CLIENTID }}
+          SPOTIFY_SECRET: ${{ secrets.SPOTIFY_SECRET }}
+        run: npm run fetch-spotify-covers
+
       - name: Build
         run: npm run build
 

@@ -1,5 +1,27 @@
-import type { Band } from '../types'
+import type { Album, Band } from '../types'
 import { moreBands } from './bands-more'
+import spotifyCovers from './spotifyCovers.generated.json'
+
+const covers = spotifyCovers as Record<string, { cover: string; spotifyUrl: string }>
+
+/**
+ * Copertina ufficiale via Spotify Web API (recuperata a build-time, vedi
+ * scripts/fetch-spotify-covers.ts), se disponibile; altrimenti la copertina
+ * eventualmente indicata a mano; altrimenti undefined (locandina generata).
+ */
+export function getAlbumCover(band: Band, album: Album): string | undefined {
+  return covers[`${band.slug}/${album.slug}`]?.cover ?? album.coverImage
+}
+
+/** True se la copertina mostrata per questo album proviene da Spotify (serve il badge "Powered by Spotify"). */
+export function isSpotifyCover(band: Band, album: Album): boolean {
+  return `${band.slug}/${album.slug}` in covers
+}
+
+/** Link diretto alla pagina dell'album su Spotify, se trovato. */
+export function getSpotifyUrl(band: Band, album: Album): string | undefined {
+  return covers[`${band.slug}/${album.slug}`]?.spotifyUrl
+}
 
 export const coreBands: Band[] = [
   {

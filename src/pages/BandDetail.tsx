@@ -4,7 +4,8 @@ import PosterCard from '../components/PosterCard'
 import SectionLabel from '../components/SectionLabel'
 import FavoriteButton from '../components/FavoriteButton'
 import ShareButton from '../components/ShareButton'
-import { bands, getBandBySlug } from '../data/bands'
+import PoweredBySpotify from '../components/PoweredBySpotify'
+import { bands, getBandBySlug, getAlbumCover, isSpotifyCover } from '../data/bands'
 import { relatedBands, genreGroupOf } from '../data/genreGroups'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { useMarkExplored } from '../hooks/useExploredBands'
@@ -99,9 +100,14 @@ export default function BandDetail() {
         </div>
       </div>
 
-      <div className="mb-6 mt-14 flex items-baseline gap-3">
+      <div className="mb-6 mt-14 flex flex-wrap items-baseline gap-3">
         <h2 className="font-display text-3xl tracking-tight text-white">Discografia</h2>
         <span className="font-heading text-sm text-white/40">{band.albums.length} album</span>
+        {band.albums.some((a) => isSpotifyCover(band, a)) && (
+          <span className="ml-auto">
+            <PoweredBySpotify />
+          </span>
+        )}
       </div>
       <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4">
         {band.albums.map((album) => (
@@ -110,7 +116,7 @@ export default function BandDetail() {
               title={album.title}
               subtitle={String(album.year)}
               palette={album.palette}
-              imageUrl={album.coverImage}
+              imageUrl={getAlbumCover(band, album)}
             />
             <p className="mt-2 truncate text-sm text-white/60">{album.tagline}</p>
           </Link>

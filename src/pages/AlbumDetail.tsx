@@ -2,8 +2,9 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import Poster from '../components/Poster'
 import SectionLabel from '../components/SectionLabel'
 import ShareButton from '../components/ShareButton'
+import PoweredBySpotify from '../components/PoweredBySpotify'
 import { VinylRecord } from '../components/MusicalBackground'
-import { getAlbum } from '../data/bands'
+import { getAlbum, getAlbumCover, isSpotifyCover, getSpotifyUrl } from '../data/bands'
 import { formatDuration } from '../types'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 
@@ -45,8 +46,13 @@ export default function AlbumDetail() {
             title={album.title}
             subtitle={String(album.year)}
             palette={album.palette}
-            imageUrl={album.coverImage}
+            imageUrl={getAlbumCover(band, album)}
           />
+          {isSpotifyCover(band, album) && (
+            <div className="mt-2 flex justify-center">
+              <PoweredBySpotify spotifyUrl={getSpotifyUrl(band, album)} />
+            </div>
+          )}
         </div>
 
         <div>
