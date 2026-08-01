@@ -1,0 +1,55 @@
+name: Aggiorna dati Spotify
+
+# Recupera copertine album, foto band e link alle tracce da Spotify e
+# committa il risultato in src/data/spotifyCovers.generated.json. Gira
+# su una schedule separata (non ad ogni deploy) perché una scansione
+# completa del catalogo (~100 band, centinaia di album) può richiedere
+# molte chiamate all'API e va soggetta a rate-limiting; i deploy normali
+# (deploy-aruba.yml) si limitano a usare l'ultimo file già committato.
+on:
+  schedule:
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-spotify-data
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    name: Recupera e committa i dati Spotify
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del codice
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Recupera copertine, foto band e link tracce da Spotify
+        env:
+          SPOTIFY_CLIENTID: ${{ secrets.SPOTIFY_CLIENTID }}
+          SPOTIFY_SECRET: ${{ secrets.SPOTIFY_SECRET }}
+        run: npm run fetch-spotify-covers
+
+      - name: Committa se ci sono cambiamenti
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- src/data/spotifyCovers.generated.json; then
+            echo "Nessuna modifica ai dati Spotify, niente da committare."
+          else
+            git add src/data/spotifyCovers.generated.json
+            git commit -m "Aggiorna dati Spotify (copertine, foto band, link tracce)"
+            git push
+          fi
