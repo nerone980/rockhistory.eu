@@ -7,6 +7,15 @@ on:
       - main
   workflow_dispatch:
 
+# Se arrivano più push ravvicinati (es. PR mergiate in rapida successione),
+# annulla il deploy precedente ancora in corso invece di farli girare in
+# parallelo: oltre a essere inutile (solo l'ultimo commit conta), i deploy
+# paralleli interrogano contemporaneamente l'API Spotify per lo stesso
+# catalogo, aumentando il rischio di rate-limiting reciproco.
+concurrency:
+  group: deploy-aruba
+  cancel-in-progress: true
+
 jobs:
   deploy:
     name: Sincronizzazione FTP
