@@ -5,9 +5,17 @@ import AlbumOfTheDay from '../components/AlbumOfTheDay'
 import SectionLabel from '../components/SectionLabel'
 import { bands } from '../data/bands'
 import { decadeOf } from '../types'
-import { GENRE_GROUPS, bandMatchesGenreGroup } from '../data/genreGroups'
+import { GENRE_GROUPS, bandMatchesGenreGroup, genreGroupOf } from '../data/genreGroups'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { useExploredCount } from '../hooks/useExploredBands'
+
+type SortOption = 'anno' | 'nome' | 'genere'
+
+const SORT_OPTIONS: { value: SortOption; label: string }[] = [
+  { value: 'anno', label: 'Anno' },
+  { value: 'nome', label: 'Alfabetico' },
+  { value: 'genere', label: 'Genere' },
+]
 
 export default function Home() {
   useDocumentMeta(
@@ -30,14 +38,24 @@ export default function Home() {
     const fromUrl = searchParams.get('genre')
     return fromUrl && genreOptions.includes(fromUrl) ? fromUrl : 'Tutte'
   })
+  const [sortBy, setSortBy] = useState<SortOption>('anno')
 
-  const filtered = useMemo(
-    () =>
-      bands
-        .filter((b) => decade === 'Tutte' || decadeOf(b.formedYear) === decade)
-        .filter((b) => genre === 'Tutte' || bandMatchesGenreGroup(b, genre)),
-    [decade, genre],
-  )
+  const filtered = useMemo(() => {
+    const result = bands
+      .filter((b) => decade === 'Tutte' || decadeOf(b.formedYear) === decade)
+      .filter((b) => genre === 'Tutte' || bandMatchesGenreGroup(b, genre))
+
+    return [...result].sort((a, b) => {
+      if (sortBy === 'nome') return a.name.localeCompare(b.name)
+      if (sortBy === 'genere') {
+        const groupIndex = (band: typeof a) =>
+          GENRE_GROUPS.findIndex((g) => g.name === genreGroupOf(band.genres[0]))
+        const diff = groupIndex(a) - groupIndex(b)
+        return diff !== 0 ? diff : a.name.localeCompare(b.name)
+      }
+      return a.formedYear - b.formedYear
+    })
+  }, [decade, genre, sortBy])
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
@@ -113,6 +131,23 @@ export default function Home() {
             }`}
           >
             {g}
+          </button>
+        ))}
+      </div>
+
+      <div className="mb-10 flex flex-wrap items-center justify-center gap-2">
+        <span className="font-heading text-xs uppercase tracking-wide text-white/30">Ordina per</span>
+        {SORT_OPTIONS.map((opt) => (
+          <button
+            key={opt.value}
+            onClick={() => setSortBy(opt.value)}
+            className={`rounded-full border px-3.5 py-1 font-heading text-xs font-medium uppercase tracking-wide transition-all duration-200 ${
+              sortBy === opt.value
+                ? 'border-white/40 bg-white/10 text-white'
+                : 'border-white/10 text-white/40 hover:border-white/25 hover:text-white/70'
+            }`}
+          >
+            {opt.label}
           </button>
         ))}
       </div>

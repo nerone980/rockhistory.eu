@@ -68,13 +68,31 @@ async function searchArtist(token: string, bandName: string) {
   return { photo: item.images[0].url as string, spotifyUrl: item.external_urls.spotify as string }
 }
 
-async function searchAlbum(token: string, bandName: string, albumTitle: string) {
+async function searchAlbum(token: string, bandName: string, albumTitle: string, albumYear: number) {
   const q = `album:${albumTitle} artist:${bandName}`
-  const url = `https://api.spotify.com/v1/search?type=album&limit=1&q=${encodeURIComponent(q)}`
+  const url = `https://api.spotify.com/v1/search?type=album&limit=10&q=${encodeURIComponent(q)}`
   const data = await spotifyGet(token, url)
-  const item = data?.albums?.items?.[0]
-  if (!item || !item.images?.length) return null
-  return { id: item.id as string, cover: item.images[0].url as string, spotifyUrl: item.external_urls.spotify as string }
+  const items = (data?.albums?.items ?? []) as any[]
+
+  const wantedTitle = normalizeTitle(albumTitle)
+  let best: any = null
+  let bestScore = -Infinity
+  for (const item of items) {
+    if (!item?.images?.length) continue
+    const releaseYear = Number(String(item.release_date ?? '').slice(0, 4))
+    const yearDiff = Number.isFinite(releaseYear) ? Math.abs(releaseYear - albumYear) : 99
+    const titleMatches = normalizeTitle(item.name ?? '') === wantedTitle
+    // Skip candidates whose title doesn't match at all and whose release year is way off:
+    // this is what causes false matches like an unrelated reissue or box set.
+    if (!titleMatches && yearDiff > 1) continue
+    const score = (titleMatches ? 100 : 0) + (item.album_type === 'album' ? 10 : 0) - yearDiff
+    if (score > bestScore) {
+      bestScore = score
+      best = item
+    }
+  }
+  if (!best) return null
+  return { id: best.id as string, cover: best.images[0].url as string, spotifyUrl: best.external_urls.spotify as string }
 }
 
 async function getAlbumTracks(token: string, albumId: string): Promise<Record<string, string>> {
@@ -115,7 +133,7 @@ async function main() {
 
     for (const album of band.albums) {
       albumsTotal++
-      const match = await searchAlbum(token, band.name, album.title)
+      const match = await searchAlbum(token, band.name, album.title, album.year)
       await new Promise((r) => setTimeout(r, 60))
       if (!match) continue
 
