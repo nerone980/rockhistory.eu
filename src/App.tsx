@@ -9,6 +9,7 @@ import Timeline from './pages/Timeline'
 import RockHistoryPage from './pages/RockHistoryPage'
 import Preferiti from './pages/Preferiti'
 import Quiz from './pages/Quiz'
+import Support from './pages/Support'
 import Privacy from './pages/Privacy'
 import NotFound from './pages/NotFound'
 
@@ -26,6 +27,7 @@ function App() {
           <Route path="/storia" element={<RockHistoryPage />} />
           <Route path="/preferiti" element={<Preferiti />} />
           <Route path="/quiz" element={<Quiz />} />
+          <Route path="/supporto" element={<Support />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
