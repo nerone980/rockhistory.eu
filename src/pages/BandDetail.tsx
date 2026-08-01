@@ -5,7 +5,15 @@ import SectionLabel from '../components/SectionLabel'
 import FavoriteButton from '../components/FavoriteButton'
 import ShareButton from '../components/ShareButton'
 import PoweredBySpotify from '../components/PoweredBySpotify'
-import { bands, getBandBySlug, getAlbumCover, isSpotifyCover } from '../data/bands'
+import {
+  bands,
+  getBandBySlug,
+  getAlbumCover,
+  isSpotifyCover,
+  getBandPhoto,
+  isSpotifyBandPhoto,
+  getBandSpotifyUrl,
+} from '../data/bands'
 import { relatedBands, genreGroupOf } from '../data/genreGroups'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { useMarkExplored } from '../hooks/useExploredBands'
@@ -59,12 +67,17 @@ export default function BandDetail() {
 
       <div className="grid gap-8 sm:grid-cols-[280px_1fr]">
         <div className="relative mx-auto w-full max-w-xs sm:mx-0">
-          <Poster title={band.name} subtitle={span} palette={band.palette} imageUrl={band.photoImage} />
+          <Poster title={band.name} subtitle={span} palette={band.palette} imageUrl={getBandPhoto(band)} />
           <FavoriteButton
             className="absolute right-3 top-3"
             active={isFavorite(band.slug)}
             onToggle={() => toggleFavorite(band.slug)}
           />
+          {isSpotifyBandPhoto(band) && (
+            <div className="mt-2 flex justify-center">
+              <PoweredBySpotify spotifyUrl={getBandSpotifyUrl(band)} />
+            </div>
+          )}
         </div>
 
         <div>
