@@ -29,11 +29,13 @@ export default function Privacy() {
             Nessun dato raccolto
           </h2>
           <p className="mt-2">
-            Il sito è statico: non ci sono form, account utente o database che raccolgono dati
-            personali dei visitatori. Anche i font utilizzati sono ospitati direttamente su
-            questo dominio (non caricati da Google Fonts o altri servizi esterni), quindi nessun
-            dato — nemmeno il tuo indirizzo IP — viene condiviso con terze parti durante la
-            navigazione.
+            Il sito è statico: non ci sono account utente o database che raccolgono dati
+            personali dei visitatori. Il modulo di contatto nella pagina "Supporto" non invia né
+            memorizza alcun dato sui nostri server: si limita ad aprire il client di posta del
+            visitatore con un'email precompilata verso support@rockhistory.eu. Anche i font
+            utilizzati sono ospitati direttamente su questo dominio (non caricati da Google Fonts
+            o altri servizi esterni), quindi nessun dato — nemmeno il tuo indirizzo IP — viene
+            condiviso con terze parti durante la navigazione.
           </p>
         </section>
 

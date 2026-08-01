@@ -71,6 +71,12 @@ export default function Navbar() {
           >
             Timeline
           </Link>
+          <Link
+            to="/supporto"
+            className="font-heading text-xs uppercase tracking-widest text-white/50 transition-colors hover:text-red-400 sm:text-sm sm:tracking-wide"
+          >
+            Supporto
+          </Link>
         </div>
       </nav>
     </header>
