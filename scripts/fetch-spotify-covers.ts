@@ -9,9 +9,25 @@ const outPath = resolve(__dirname, '../src/data/spotifyCovers.generated.json')
 const CLIENT_ID = process.env.SPOTIFY_CLIENTID
 const CLIENT_SECRET = process.env.SPOTIFY_SECRET
 
-interface CoverEntry {
+interface AlbumEntry {
   cover: string
   spotifyUrl: string
+  tracks: Record<string, string>
+}
+
+interface SpotifyData {
+  bands: Record<string, { photo: string; spotifyUrl: string }>
+  albums: Record<string, AlbumEntry>
+}
+
+function normalizeTitle(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/\(.*?\)/g, '')
+    .replace(/[-–]\s*(remaster(ed)?|live|mono|stereo|single|deluxe|bonus track|demo).*/gi, '')
+    .replace(/['’".,!?]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 async function getAccessToken(): Promise<string> {
@@ -30,14 +46,7 @@ async function getAccessToken(): Promise<string> {
   return data.access_token
 }
 
-async function searchAlbum(
-  token: string,
-  bandName: string,
-  albumTitle: string,
-): Promise<CoverEntry | null> {
-  const q = `album:${albumTitle} artist:${bandName}`
-  const url = `https://api.spotify.com/v1/search?type=album&limit=1&q=${encodeURIComponent(q)}`
-
+async function spotifyGet(token: string, url: string): Promise<any | null> {
   for (let attempt = 0; attempt < 4; attempt++) {
     const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } })
     if (res.status === 429) {
@@ -46,50 +55,90 @@ async function searchAlbum(
       continue
     }
     if (!res.ok) return null
-    const data = (await res.json()) as {
-      albums?: { items: { images: { url: string }[]; external_urls: { spotify: string } }[] }
-    }
-    const item = data.albums?.items[0]
-    if (!item || item.images.length === 0) return null
-    return { cover: item.images[0].url, spotifyUrl: item.external_urls.spotify }
+    return res.json()
   }
   return null
 }
 
+async function searchArtist(token: string, bandName: string) {
+  const url = `https://api.spotify.com/v1/search?type=artist&limit=1&q=${encodeURIComponent(bandName)}`
+  const data = await spotifyGet(token, url)
+  const item = data?.artists?.items?.[0]
+  if (!item || !item.images?.length) return null
+  return { photo: item.images[0].url as string, spotifyUrl: item.external_urls.spotify as string }
+}
+
+async function searchAlbum(token: string, bandName: string, albumTitle: string) {
+  const q = `album:${albumTitle} artist:${bandName}`
+  const url = `https://api.spotify.com/v1/search?type=album&limit=1&q=${encodeURIComponent(q)}`
+  const data = await spotifyGet(token, url)
+  const item = data?.albums?.items?.[0]
+  if (!item || !item.images?.length) return null
+  return { id: item.id as string, cover: item.images[0].url as string, spotifyUrl: item.external_urls.spotify as string }
+}
+
+async function getAlbumTracks(token: string, albumId: string): Promise<Record<string, string>> {
+  const data = await spotifyGet(token, `https://api.spotify.com/v1/albums/${albumId}/tracks?limit=50`)
+  const tracks: Record<string, string> = {}
+  for (const t of data?.items ?? []) {
+    if (t?.name && t?.external_urls?.spotify) {
+      tracks[normalizeTitle(t.name)] = t.external_urls.spotify
+    }
+  }
+  return tracks
+}
+
 async function main() {
-  const result: Record<string, CoverEntry> = {}
+  const result: SpotifyData = { bands: {}, albums: {} }
 
   if (!CLIENT_ID || !CLIENT_SECRET) {
     console.warn(
-      'SPOTIFY_CLIENTID / SPOTIFY_SECRET non impostate: genero un file vuoto, il sito userà le locandine generate.',
+      'SPOTIFY_CLIENTID / SPOTIFY_SECRET non impostate: genero un file vuoto, il sito userà gli asset generati.',
     )
     writeFileSync(outPath, JSON.stringify(result, null, 2))
     return
   }
 
   const token = await getAccessToken()
-  let found = 0
-  let total = 0
+  let bandsFound = 0
+  let albumsFound = 0
+  let tracksFound = 0
+  let albumsTotal = 0
 
   for (const band of bands) {
+    const artist = await searchArtist(token, band.name)
+    if (artist) {
+      result.bands[band.slug] = artist
+      bandsFound++
+    }
+    await new Promise((r) => setTimeout(r, 60))
+
     for (const album of band.albums) {
-      total++
-      const entry = await searchAlbum(token, band.name, album.title)
-      if (entry) {
-        result[`${band.slug}/${album.slug}`] = entry
-        found++
-      }
-      // Piccola pausa per restare ben dentro i rate limit di Spotify
+      albumsTotal++
+      const match = await searchAlbum(token, band.name, album.title)
       await new Promise((r) => setTimeout(r, 60))
+      if (!match) continue
+
+      const tracks = await getAlbumTracks(token, match.id)
+      await new Promise((r) => setTimeout(r, 60))
+
+      result.albums[`${band.slug}/${album.slug}`] = {
+        cover: match.cover,
+        spotifyUrl: match.spotifyUrl,
+        tracks,
+      }
+      albumsFound++
+      tracksFound += Object.keys(tracks).length
     }
   }
 
   writeFileSync(outPath, JSON.stringify(result, null, 2))
-  console.log(`Copertine Spotify trovate: ${found}/${total} -> ${outPath}`)
+  console.log(
+    `Spotify: ${bandsFound}/${bands.length} foto band, ${albumsFound}/${albumsTotal} copertine album, ${tracksFound} link a tracce -> ${outPath}`,
+  )
 }
 
 main().catch((err) => {
-  console.error('Errore nel recupero delle copertine Spotify:', err)
-  // Non far fallire la build per un problema con l'API esterna: scrive un file vuoto.
-  writeFileSync(outPath, JSON.stringify({}, null, 2))
+  console.error('Errore nel recupero dei dati Spotify:', err)
+  writeFileSync(outPath, JSON.stringify({ bands: {}, albums: {} }, null, 2))
 })

@@ -1,8 +1,27 @@
-import type { Album, Band } from '../types'
+import type { Album, Band, Track } from '../types'
 import { moreBands } from './bands-more'
-import spotifyCovers from './spotifyCovers.generated.json'
+import spotifyData from './spotifyCovers.generated.json'
 
-const covers = spotifyCovers as Record<string, { cover: string; spotifyUrl: string }>
+interface SpotifyAlbumEntry {
+  cover: string
+  spotifyUrl: string
+  tracks: Record<string, string>
+}
+
+const spotify = spotifyData as {
+  bands: Record<string, { photo: string; spotifyUrl: string }>
+  albums: Record<string, SpotifyAlbumEntry>
+}
+
+function normalizeTitle(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/\(.*?\)/g, '')
+    .replace(/[-–]\s*(remaster(ed)?|live|mono|stereo|single|deluxe|bonus track|demo).*/gi, '')
+    .replace(/['’".,!?]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
 
 /**
  * Copertina ufficiale via Spotify Web API (recuperata a build-time, vedi
@@ -10,17 +29,39 @@ const covers = spotifyCovers as Record<string, { cover: string; spotifyUrl: stri
  * eventualmente indicata a mano; altrimenti undefined (locandina generata).
  */
 export function getAlbumCover(band: Band, album: Album): string | undefined {
-  return covers[`${band.slug}/${album.slug}`]?.cover ?? album.coverImage
+  return spotify.albums[`${band.slug}/${album.slug}`]?.cover ?? album.coverImage
 }
 
 /** True se la copertina mostrata per questo album proviene da Spotify (serve il badge "Powered by Spotify"). */
 export function isSpotifyCover(band: Band, album: Album): boolean {
-  return `${band.slug}/${album.slug}` in covers
+  return `${band.slug}/${album.slug}` in spotify.albums
 }
 
 /** Link diretto alla pagina dell'album su Spotify, se trovato. */
 export function getSpotifyUrl(band: Band, album: Album): string | undefined {
-  return covers[`${band.slug}/${album.slug}`]?.spotifyUrl
+  return spotify.albums[`${band.slug}/${album.slug}`]?.spotifyUrl
+}
+
+/** Foto ufficiale della band via Spotify, se trovata; altrimenti la foto eventualmente indicata a mano. */
+export function getBandPhoto(band: Band): string | undefined {
+  return spotify.bands[band.slug]?.photo ?? band.photoImage
+}
+
+/** True se la foto mostrata per questa band proviene da Spotify. */
+export function isSpotifyBandPhoto(band: Band): boolean {
+  return band.slug in spotify.bands
+}
+
+/** Link diretto al profilo artista della band su Spotify, se trovato. */
+export function getBandSpotifyUrl(band: Band): string | undefined {
+  return spotify.bands[band.slug]?.spotifyUrl
+}
+
+/** Link diretto al brano su Spotify, se trovato (abbinamento per titolo normalizzato). */
+export function getTrackSpotifyUrl(band: Band, album: Album, track: Track): string | undefined {
+  const entry = spotify.albums[`${band.slug}/${album.slug}`]
+  if (!entry) return undefined
+  return entry.tracks[normalizeTitle(track.title)]
 }
 
 export const coreBands: Band[] = [
