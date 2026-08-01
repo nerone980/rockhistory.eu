@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { bands } from '../data/bands'
+import { bands, getAlbumCover } from '../data/bands'
 
 function getAlbumOfTheDay() {
   const pairs = bands.flatMap((band) => band.albums.map((album) => ({ band, album })))
@@ -10,6 +10,7 @@ function getAlbumOfTheDay() {
 
 export default function AlbumOfTheDay() {
   const { band, album } = getAlbumOfTheDay()
+  const cover = getAlbumCover(band, album)
 
   return (
     <Link
@@ -18,11 +19,15 @@ export default function AlbumOfTheDay() {
     >
       <div
         aria-hidden
-        className="h-16 w-16 shrink-0 rounded transition-transform duration-300 group-hover:scale-105"
-        style={{
-          backgroundImage: `linear-gradient(160deg, ${album.palette[0]}, ${album.palette[1]})`,
-        }}
-      />
+        className="h-16 w-16 shrink-0 overflow-hidden rounded transition-transform duration-300 group-hover:scale-105"
+        style={
+          cover
+            ? undefined
+            : { backgroundImage: `linear-gradient(160deg, ${album.palette[0]}, ${album.palette[1]})` }
+        }
+      >
+        {cover && <img src={cover} alt="" loading="lazy" className="h-full w-full object-cover" />}
+      </div>
       <div className="min-w-0 text-left">
         <p className="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-red-500">
           Disco del giorno
