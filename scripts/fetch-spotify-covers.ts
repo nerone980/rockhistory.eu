@@ -191,18 +191,26 @@ async function main() {
       break
     }
 
-    const artist = await searchArtist(token, band.name)
-    if (artist) {
-      result.bands[band.slug] = artist
-      bandsFound++
+    // Salta le band/album già presenti nel file: senza questo, ogni run
+    // ripete da capo le stesse ricerche già riuscite in passato, sprecando
+    // tempo e quota invece di avanzare sul resto del catalogo.
+    if (!result.bands[band.slug]) {
+      const artist = await searchArtist(token, band.name)
+      if (artist) {
+        result.bands[band.slug] = artist
+        bandsFound++
+      }
+      await new Promise((r) => setTimeout(r, 60))
     }
-    await new Promise((r) => setTimeout(r, 60))
 
     for (const album of band.albums) {
       if (Date.now() - startedAt > TIME_BUDGET_MS) {
         stoppedEarly = true
         break outer
       }
+
+      const key = `${band.slug}/${album.slug}`
+      if (result.albums[key]) continue
 
       albumsTotal++
       const match = await searchAlbum(token, band.name, album.title, album.year)
@@ -212,7 +220,7 @@ async function main() {
       const tracks = await getAlbumTracks(token, match.id)
       await new Promise((r) => setTimeout(r, 60))
 
-      result.albums[`${band.slug}/${album.slug}`] = {
+      result.albums[key] = {
         cover: match.cover,
         spotifyUrl: match.spotifyUrl,
         tracks,
