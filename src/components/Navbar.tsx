@@ -55,27 +55,56 @@ export default function Navbar() {
           </Link>
           <Link
             to="/quiz"
-            className="font-heading text-xs uppercase tracking-widest text-white/50 transition-colors hover:text-red-400 sm:text-sm sm:tracking-wide"
+            aria-label="Quiz"
+            title="Quiz"
+            className="flex h-8 items-center gap-1.5 rounded-full px-2 text-white/60 transition-colors hover:text-red-400"
           >
-            Quiz
+            <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="9" />
+              <text x="12" y="16.5" textAnchor="middle" fontSize="11" fontWeight="bold" fill="currentColor" stroke="none">
+                ?
+              </text>
+            </svg>
+            <span className="hidden font-heading text-sm uppercase tracking-wide sm:inline">Quiz</span>
           </Link>
           <Link
             to="/storia"
-            className="font-heading text-xs uppercase tracking-widest text-white/50 transition-colors hover:text-red-400 sm:text-sm sm:tracking-wide"
+            aria-label="Storia del rock"
+            title="Storia"
+            className="flex h-8 items-center gap-1.5 rounded-full px-2 text-white/60 transition-colors hover:text-red-400"
           >
-            Storia
+            <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="13" r="8" />
+              <path d="M12 9v4l3 2" />
+              <path d="M9 2h6" />
+            </svg>
+            <span className="hidden font-heading text-sm uppercase tracking-wide sm:inline">Storia</span>
           </Link>
           <Link
             to="/timeline"
-            className="font-heading text-xs uppercase tracking-widest text-white/50 transition-colors hover:text-red-400 sm:text-sm sm:tracking-wide"
+            aria-label="Timeline"
+            title="Timeline"
+            className="flex h-8 items-center gap-1.5 rounded-full px-2 text-white/60 transition-colors hover:text-red-400"
           >
-            Timeline
+            <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="6" y1="3" x2="6" y2="21" />
+              <line x1="6" y1="7" x2="14" y2="7" />
+              <line x1="6" y1="13" x2="14" y2="13" />
+              <line x1="6" y1="19" x2="14" y2="19" />
+            </svg>
+            <span className="hidden font-heading text-sm uppercase tracking-wide sm:inline">Timeline</span>
           </Link>
           <Link
             to="/supporto"
-            className="font-heading text-xs uppercase tracking-widest text-white/50 transition-colors hover:text-red-400 sm:text-sm sm:tracking-wide"
+            aria-label="Supporto"
+            title="Supporto"
+            className="flex h-8 items-center gap-1.5 rounded-full px-2 text-white/60 transition-colors hover:text-red-400"
           >
-            Supporto
+            <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="m3 7 9 6 9-6" />
+            </svg>
+            <span className="hidden font-heading text-sm uppercase tracking-wide sm:inline">Supporto</span>
           </Link>
         </div>
       </nav>
