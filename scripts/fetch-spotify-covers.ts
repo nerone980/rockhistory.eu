@@ -1,4 +1,4 @@
-import { writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { bands } from '../src/data/bands'
@@ -26,6 +26,20 @@ interface AlbumEntry {
 interface SpotifyData {
   bands: Record<string, { photo: string; spotifyUrl: string }>
   albums: Record<string, AlbumEntry>
+}
+
+// Ogni run riparte dai dati già committati invece che da zero: se una scansione
+// fallisce a metà (rate-limit, quota esaurita, timeout) i dati già trovati in
+// run precedenti restano nel file invece di essere cancellati da un run
+// parziale peggiore.
+function loadExisting(): SpotifyData {
+  try {
+    if (!existsSync(outPath)) return { bands: {}, albums: {} }
+    const raw = JSON.parse(readFileSync(outPath, 'utf-8'))
+    return { bands: raw?.bands ?? {}, albums: raw?.albums ?? {} }
+  } catch {
+    return { bands: {}, albums: {} }
+  }
 }
 
 function normalizeTitle(title: string): string {
@@ -150,13 +164,10 @@ async function getAlbumTracks(token: string, albumId: string): Promise<Record<st
 }
 
 async function main() {
-  const result: SpotifyData = { bands: {}, albums: {} }
+  const result: SpotifyData = loadExisting()
 
   if (!CLIENT_ID || !CLIENT_SECRET) {
-    console.warn(
-      'SPOTIFY_CLIENTID / SPOTIFY_SECRET non impostate: genero un file vuoto, il sito userà gli asset generati.',
-    )
-    writeFileSync(outPath, JSON.stringify(result, null, 2))
+    console.warn('SPOTIFY_CLIENTID / SPOTIFY_SECRET non impostate: lascio invariati i dati già presenti.')
     return
   }
 
@@ -213,13 +224,14 @@ async function main() {
 
   writeFileSync(outPath, JSON.stringify(result, null, 2))
   console.log(
-    `Spotify: ${bandsFound}/${bands.length} foto band, ${albumsFound}/${albumsTotal} copertine album, ${tracksFound} link a tracce` +
-      (stoppedEarly ? ' (fermato per limite di tempo, catalogo parziale — riproverà al prossimo giro)' : '') +
+    `Spotify: +${bandsFound} foto band e +${albumsFound}/${albumsTotal} copertine album trovate in questo giro ` +
+      `(totale nel file: ${Object.keys(result.bands).length}/${bands.length} foto band, ` +
+      `${Object.keys(result.albums).length} copertine album), +${tracksFound} link a tracce` +
+      (stoppedEarly ? ' (fermato per limite di tempo, resto del catalogo riprovato al prossimo giro)' : '') +
       ` -> ${outPath}`,
   )
 }
 
 main().catch((err) => {
-  console.error('Errore nel recupero dei dati Spotify:', err)
-  writeFileSync(outPath, JSON.stringify({ bands: {}, albums: {} }, null, 2))
+  console.error('Errore nel recupero dei dati Spotify: lascio invariati i dati già presenti.', err)
 })
