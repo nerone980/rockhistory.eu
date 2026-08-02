@@ -10,6 +10,11 @@ on:
   schedule:
     - cron: '17 3 * * 1'
   workflow_dispatch:
+    inputs:
+      band_limit:
+        description: 'Solo per test manuali: limita la scansione alle prime N band (lascia vuoto per il catalogo completo) e non committa il risultato'
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -41,10 +46,12 @@ jobs:
         env:
           SPOTIFY_CLIENTID: ${{ secrets.SPOTIFY_CLIENTID }}
           SPOTIFY_SECRET: ${{ secrets.SPOTIFY_SECRET }}
+          BAND_LIMIT: ${{ inputs.band_limit }}
         run: npm run fetch-spotify-covers
 
       - name: Committa se ci sono cambiamenti
         id: commit
+        if: inputs.band_limit == ''
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

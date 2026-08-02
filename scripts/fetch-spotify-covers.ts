@@ -147,7 +147,13 @@ async function main() {
   let albumsTotal = 0
   let stoppedEarly = false
 
-  outer: for (const band of bands) {
+  // BAND_LIMIT è pensata solo per un test manuale rapido (es. verificare se
+  // Spotify sta ancora rate-limitando senza dover aspettare una scansione
+  // completa): non è usata dalla schedule normale.
+  const bandLimit = Number(process.env.BAND_LIMIT)
+  const bandsToScan = Number.isFinite(bandLimit) && bandLimit > 0 ? bands.slice(0, bandLimit) : bands
+
+  outer: for (const band of bandsToScan) {
     if (Date.now() - startedAt > TIME_BUDGET_MS) {
       stoppedEarly = true
       break
