@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import Poster from './Poster'
 import FavoriteButton from './FavoriteButton'
 import { useFavorites } from '../hooks/useFavorites'
+import { getBandPhoto } from '../data/bands'
 import { decadeOf, type Band } from '../types'
 
 export default function PosterCard({ band }: { band: Band }) {
@@ -19,6 +20,7 @@ export default function PosterCard({ band }: { band: Band }) {
           palette={band.palette}
           badge={decadeOf(band.formedYear)}
           variant="turntable"
+          imageUrl={getBandPhoto(band)}
         />
         <p className="mt-2 truncate font-heading text-sm text-white/50 transition-colors group-hover:text-white/70">
           {band.genres.join(' · ')}
