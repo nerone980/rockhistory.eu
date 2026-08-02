@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: fetch-spotify-data
@@ -43,13 +44,27 @@ jobs:
         run: npm run fetch-spotify-covers
 
       - name: Committa se ci sono cambiamenti
+        id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           if git diff --quiet -- src/data/spotifyCovers.generated.json; then
             echo "Nessuna modifica ai dati Spotify, niente da committare."
+            echo "committed=false" >> "$GITHUB_OUTPUT"
           else
             git add src/data/spotifyCovers.generated.json
             git commit -m "Aggiorna dati Spotify (copertine, foto band, link tracce)"
             git push
+            echo "committed=true" >> "$GITHUB_OUTPUT"
           fi
+
+      # Un push fatto con il GITHUB_TOKEN di default non attiva altri
+      # workflow (per evitare loop infiniti) — quindi il "on: push" di
+      # deploy-aruba.yml non scatterebbe mai per il commit sopra. Lo
+      # attiviamo esplicitamente via workflow_dispatch, che invece è
+      # permesso con il GITHUB_TOKEN.
+      - name: Attiva il deploy con i nuovi dati
+        if: steps.commit.outputs.committed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run deploy-aruba.yml --ref main
