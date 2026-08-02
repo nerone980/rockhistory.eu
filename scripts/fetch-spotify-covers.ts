@@ -9,6 +9,14 @@ const outPath = resolve(__dirname, '../src/data/spotifyCovers.generated.json')
 const CLIENT_ID = process.env.SPOTIFY_CLIENTID
 const CLIENT_SECRET = process.env.SPOTIFY_SECRET
 
+// Tetto massimo per l'intera scansione del catalogo: se Spotify rallenta o
+// applica rate-limiting pesante, ci fermiamo e scriviamo quello che abbiamo
+// raccolto finora invece di bloccare il workflow per ore (è già successo:
+// senza questo limite un run è arrivato al timeout massimo di 6h di GitHub
+// Actions senza mai completare né committare nulla).
+const TIME_BUDGET_MS = 4 * 60 * 1000
+const REQUEST_TIMEOUT_MS = 10_000
+
 interface AlbumEntry {
   cover: string
   spotifyUrl: string
@@ -38,6 +46,7 @@ async function getAccessToken(): Promise<string> {
       Authorization: `Basic ${Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64')}`,
     },
     body: 'grant_type=client_credentials',
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   })
   if (!res.ok) {
     throw new Error(`Autenticazione Spotify fallita: ${res.status} ${await res.text()}`)
@@ -47,10 +56,23 @@ async function getAccessToken(): Promise<string> {
 }
 
 async function spotifyGet(token: string, url: string): Promise<any | null> {
-  for (let attempt = 0; attempt < 4; attempt++) {
-    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } })
+  for (let attempt = 0; attempt < 3; attempt++) {
+    let res: Response
+    try {
+      // Senza un timeout esplicito, una richiesta che resta appesa (connessione
+      // stallata, nessuna risposta) blocca questo await per sempre: è così che
+      // un run è arrivato al limite di 6h di GitHub Actions senza mai finire.
+      res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+      })
+    } catch {
+      return null
+    }
     if (res.status === 429) {
-      const retryAfter = Number(res.headers.get('retry-after') ?? '2')
+      // Cap al ritardo suggerito da Spotify: in rate-limiting pesante può
+      // indicare attese di decine di minuti, che qui non ci possiamo permettere.
+      const retryAfter = Math.min(Number(res.headers.get('retry-after') ?? '2'), 10)
       await new Promise((r) => setTimeout(r, (retryAfter + 1) * 1000))
       continue
     }
@@ -118,12 +140,19 @@ async function main() {
   }
 
   const token = await getAccessToken()
+  const startedAt = Date.now()
   let bandsFound = 0
   let albumsFound = 0
   let tracksFound = 0
   let albumsTotal = 0
+  let stoppedEarly = false
 
-  for (const band of bands) {
+  outer: for (const band of bands) {
+    if (Date.now() - startedAt > TIME_BUDGET_MS) {
+      stoppedEarly = true
+      break
+    }
+
     const artist = await searchArtist(token, band.name)
     if (artist) {
       result.bands[band.slug] = artist
@@ -132,6 +161,11 @@ async function main() {
     await new Promise((r) => setTimeout(r, 60))
 
     for (const album of band.albums) {
+      if (Date.now() - startedAt > TIME_BUDGET_MS) {
+        stoppedEarly = true
+        break outer
+      }
+
       albumsTotal++
       const match = await searchAlbum(token, band.name, album.title, album.year)
       await new Promise((r) => setTimeout(r, 60))
@@ -152,7 +186,9 @@ async function main() {
 
   writeFileSync(outPath, JSON.stringify(result, null, 2))
   console.log(
-    `Spotify: ${bandsFound}/${bands.length} foto band, ${albumsFound}/${albumsTotal} copertine album, ${tracksFound} link a tracce -> ${outPath}`,
+    `Spotify: ${bandsFound}/${bands.length} foto band, ${albumsFound}/${albumsTotal} copertine album, ${tracksFound} link a tracce` +
+      (stoppedEarly ? ' (fermato per limite di tempo, catalogo parziale — riproverà al prossimo giro)' : '') +
+      ` -> ${outPath}`,
   )
 }
 
