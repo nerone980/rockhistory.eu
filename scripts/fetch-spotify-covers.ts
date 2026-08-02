@@ -55,6 +55,13 @@ async function getAccessToken(): Promise<string> {
   return data.access_token
 }
 
+// Da luglio 2026 Spotify distingue, nel corpo della risposta di errore, un
+// rate limit (breve, si risolve in secondi) da un quota limit (più ampio,
+// legato all'intero account sviluppatore): logghiamo i primi errori non-ok
+// per capire con quale dei due abbiamo a che fare, invece di scoprirlo solo
+// aspettando ore alla cieca.
+let diagnosticLogsLeft = 5
+
 async function spotifyGet(token: string, url: string): Promise<any | null> {
   for (let attempt = 0; attempt < 3; attempt++) {
     let res: Response
@@ -66,8 +73,22 @@ async function spotifyGet(token: string, url: string): Promise<any | null> {
         headers: { Authorization: `Bearer ${token}` },
         signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
       })
-    } catch {
+    } catch (err) {
+      if (diagnosticLogsLeft > 0) {
+        diagnosticLogsLeft--
+        console.warn(`[fetch fallita] url=${url} errore=${err}`)
+      }
       return null
+    }
+    if (!res.ok && diagnosticLogsLeft > 0) {
+      diagnosticLogsLeft--
+      const body = await res
+        .clone()
+        .text()
+        .catch(() => '<corpo non leggibile>')
+      console.warn(
+        `[${res.status}] url=${url} retry-after=${res.headers.get('retry-after')} corpo=${body.slice(0, 500)}`,
+      )
     }
     if (res.status === 429) {
       // Cap al ritardo suggerito da Spotify: in rate-limiting pesante può
