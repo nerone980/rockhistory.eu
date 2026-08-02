@@ -45,12 +45,27 @@ export default function Poster({ title, subtitle, palette, badge, imageUrl, vari
                 <stop offset="0%" stopColor={palette[1]} />
                 <stop offset="100%" stopColor={palette[0]} />
               </radialGradient>
+              <clipPath id={`vinyl-clip-${rawId}`}>
+                <circle cx="100" cy="100" r="44" />
+              </clipPath>
             </defs>
             <circle cx="100" cy="100" r="98" fill="#0a0a0a" />
             <circle cx="100" cy="100" r="86" fill="none" stroke="#ffffff" strokeOpacity="0.07" strokeWidth="1" />
             <circle cx="100" cy="100" r="72" fill="none" stroke="#ffffff" strokeOpacity="0.07" strokeWidth="1" />
             <circle cx="100" cy="100" r="58" fill="none" stroke="#ffffff" strokeOpacity="0.07" strokeWidth="1" />
             <circle cx="100" cy="100" r="44" fill={`url(#vinyl-label-${rawId})`} />
+            {imageUrl && (
+              <image
+                href={imageUrl}
+                x="56"
+                y="56"
+                width="88"
+                height="88"
+                preserveAspectRatio="xMidYMid slice"
+                clipPath={`url(#vinyl-clip-${rawId})`}
+              />
+            )}
+            <circle cx="100" cy="100" r="44" fill="none" stroke="#000000" strokeOpacity="0.35" strokeWidth="1.5" />
             <circle cx="100" cy="100" r="4" fill="#0a0a0a" />
           </svg>
         </div>
