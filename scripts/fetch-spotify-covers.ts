@@ -136,13 +136,15 @@ async function searchAlbum(token: string, bandName: string, albumTitle: string, 
   let bestScore = -Infinity
   for (const item of items) {
     if (!item?.images?.length) continue
+    // Il titolo normalizzato deve corrispondere esattamente: senza questo controllo,
+    // quando l'album giusto non compare tra i risultati (limite di 10 dalla search
+    // API) si finisce per accettare un titolo diverso solo perché l'anno è vicino,
+    // es. "Queen" (1973) che riceve per errore la cover di "Queen II" (1974).
+    // Meglio nessuna copertina che una copertina sbagliata.
+    if (normalizeTitle(item.name ?? '') !== wantedTitle) continue
     const releaseYear = Number(String(item.release_date ?? '').slice(0, 4))
     const yearDiff = Number.isFinite(releaseYear) ? Math.abs(releaseYear - albumYear) : 99
-    const titleMatches = normalizeTitle(item.name ?? '') === wantedTitle
-    // Skip candidates whose title doesn't match at all and whose release year is way off:
-    // this is what causes false matches like an unrelated reissue or box set.
-    if (!titleMatches && yearDiff > 1) continue
-    const score = (titleMatches ? 100 : 0) + (item.album_type === 'album' ? 10 : 0) - yearDiff
+    const score = (item.album_type === 'album' ? 10 : 0) - yearDiff
     if (score > bestScore) {
       bestScore = score
       best = item
