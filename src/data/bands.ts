@@ -1147,7 +1147,7 @@ export const coreBands: Band[] = [
     albums: [
       {
         slug: 'queen-album',
-        title: 'Queen',
+        title: 'Queen I',
         year: 1973,
         tagline: "L'esordio hard rock con venature progressive",
         history: 'Album di debutto, mescola hard rock e influenze progressive senza ancora rivelare tutto il potenziale della band.',
