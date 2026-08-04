@@ -75,6 +75,10 @@ async function getAccessToken(): Promise<string> {
 // per capire con quale dei due abbiamo a che fare, invece di scoprirlo solo
 // aspettando ore alla cieca.
 let diagnosticLogsLeft = 5
+// Diagnostica temporanea per capire perché alcuni album omonimi della band
+// (es. "Queen") non trovano un match nemmeno sfogliando la discografia
+// ufficiale dell'artista.
+let diagnosticCatalogLogsLeft = 5
 
 async function spotifyGet(token: string, url: string): Promise<any | null> {
   for (let attempt = 0; attempt < 3; attempt++) {
@@ -173,9 +177,11 @@ async function findAlbumInArtistCatalog(token: string, artistId: string, albumTi
   let best: any = null
   let bestScore = -Infinity
   let pages = 0
+  const seenTitles: string[] = []
   while (url && pages < 3) {
     const data = await spotifyGet(token, url)
     for (const item of (data?.items ?? []) as any[]) {
+      if (diagnosticCatalogLogsLeft > 0) seenTitles.push(`${item?.name}(${item?.release_date})`)
       if (!item?.images?.length) continue
       if (normalizeTitle(item.name ?? '') !== wantedTitle) continue
       const releaseYear = Number(String(item.release_date ?? '').slice(0, 4))
@@ -189,7 +195,13 @@ async function findAlbumInArtistCatalog(token: string, artistId: string, albumTi
     url = data?.next ?? null
     pages++
   }
-  if (!best) return null
+  if (!best) {
+    if (diagnosticCatalogLogsLeft > 0) {
+      diagnosticCatalogLogsLeft--
+      console.warn(`[catalogo artista] nessun match per "${albumTitle}" (${albumYear}). Titoli visti: ${seenTitles.join(' | ')}`)
+    }
+    return null
+  }
   return { id: best.id as string, cover: best.images[0].url as string, spotifyUrl: best.external_urls.spotify as string }
 }
 
