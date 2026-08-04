@@ -127,11 +127,9 @@ async function searchArtist(token: string, bandName: string) {
 
 async function searchAlbum(token: string, bandName: string, albumTitle: string, albumYear: number) {
   const q = `album:${albumTitle} artist:${bandName}`
-  // limit=20 (50 viene rifiutato da Spotify con 400 "Invalid limit" per questo
-  // endpoint): con album omonimi della band (es. "Queen", "The Beatles") i primi
-  // 10 risultati sono spesso raccolte o live che schiacciano l'album originale,
-  // e il match a titolo esatto non lo troverebbe mai.
-  const url = `https://api.spotify.com/v1/search?type=album&limit=20&q=${encodeURIComponent(q)}`
+  // limit=10: valori più alti (20, 50) vengono rifiutati da Spotify con 400
+  // "Invalid limit" su questo endpoint.
+  const url = `https://api.spotify.com/v1/search?type=album&limit=10&q=${encodeURIComponent(q)}`
   const data = await spotifyGet(token, url)
   const items = (data?.albums?.items ?? []) as any[]
 
@@ -153,6 +151,43 @@ async function searchAlbum(token: string, bandName: string, albumTitle: string, 
       bestScore = score
       best = item
     }
+  }
+  if (!best) return null
+  return { id: best.id as string, cover: best.images[0].url as string, spotifyUrl: best.external_urls.spotify as string }
+}
+
+async function getArtistId(token: string, bandName: string): Promise<string | null> {
+  const url = `https://api.spotify.com/v1/search?type=artist&limit=1&q=${encodeURIComponent(bandName)}`
+  const data = await spotifyGet(token, url)
+  return data?.artists?.items?.[0]?.id ?? null
+}
+
+// Quando la ricerca a titolo esatto non trova nulla, capita spesso per gli album
+// omonimi della band (es. "Queen", "The Beatles"): tra i soli 10 risultati della
+// search generica, raccolte e live schiacciano l'album originale. Qui sfogliamo
+// direttamente la discografia ufficiale dell'artista, dove non c'è rumore di
+// altri artisti e il titolo esatto si trova quasi sempre.
+async function findAlbumInArtistCatalog(token: string, artistId: string, albumTitle: string, albumYear: number) {
+  const wantedTitle = normalizeTitle(albumTitle)
+  let url: string | null = `https://api.spotify.com/v1/artists/${artistId}/albums?include_groups=album`
+  let best: any = null
+  let bestScore = -Infinity
+  let pages = 0
+  while (url && pages < 3) {
+    const data = await spotifyGet(token, url)
+    for (const item of (data?.items ?? []) as any[]) {
+      if (!item?.images?.length) continue
+      if (normalizeTitle(item.name ?? '') !== wantedTitle) continue
+      const releaseYear = Number(String(item.release_date ?? '').slice(0, 4))
+      const yearDiff = Number.isFinite(releaseYear) ? Math.abs(releaseYear - albumYear) : 99
+      const score = -yearDiff
+      if (score > bestScore) {
+        bestScore = score
+        best = item
+      }
+    }
+    url = data?.next ?? null
+    pages++
   }
   if (!best) return null
   return { id: best.id as string, cover: best.images[0].url as string, spotifyUrl: best.external_urls.spotify as string }
@@ -219,8 +254,16 @@ async function main() {
       if (result.albums[key]) continue
 
       albumsTotal++
-      const match = await searchAlbum(token, band.name, album.title, album.year)
+      let match = await searchAlbum(token, band.name, album.title, album.year)
       await new Promise((r) => setTimeout(r, 60))
+      if (!match) {
+        const artistId = await getArtistId(token, band.name)
+        await new Promise((r) => setTimeout(r, 60))
+        if (artistId) {
+          match = await findAlbumInArtistCatalog(token, artistId, album.title, album.year)
+          await new Promise((r) => setTimeout(r, 60))
+        }
+      }
       if (!match) continue
 
       const tracks = await getAlbumTracks(token, match.id)
