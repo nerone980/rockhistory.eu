@@ -127,10 +127,11 @@ async function searchArtist(token: string, bandName: string) {
 
 async function searchAlbum(token: string, bandName: string, albumTitle: string, albumYear: number) {
   const q = `album:${albumTitle} artist:${bandName}`
-  // limit=50 (il massimo di Spotify): con album omonimi della band (es. "Queen",
-  // "The Beatles") i primi 10 risultati sono spesso raccolte o live che schiacciano
-  // l'album originale, e il match a titolo esatto non lo troverebbe mai.
-  const url = `https://api.spotify.com/v1/search?type=album&limit=50&q=${encodeURIComponent(q)}`
+  // limit=20 (50 viene rifiutato da Spotify con 400 "Invalid limit" per questo
+  // endpoint): con album omonimi della band (es. "Queen", "The Beatles") i primi
+  // 10 risultati sono spesso raccolte o live che schiacciano l'album originale,
+  // e il match a titolo esatto non lo troverebbe mai.
+  const url = `https://api.spotify.com/v1/search?type=album&limit=20&q=${encodeURIComponent(q)}`
   const data = await spotifyGet(token, url)
   const items = (data?.albums?.items ?? []) as any[]
 
