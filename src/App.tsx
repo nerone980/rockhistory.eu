@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import MusicalBackground from './components/MusicalBackground'
+import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
 import BandDetail from './pages/BandDetail'
 import AlbumDetail from './pages/AlbumDetail'
@@ -16,6 +17,7 @@ import NotFound from './pages/NotFound'
 function App() {
   return (
     <div className="grain-overlay flex min-h-screen flex-col">
+      <ScrollToTop />
       <MusicalBackground />
       <Navbar />
       <main className="flex-1">
